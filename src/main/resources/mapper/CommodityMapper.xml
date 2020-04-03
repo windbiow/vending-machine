@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fuhe.chen.vendingmachine.dao.CommodityDao">
+    <resultMap id="CommodityMap" type="com.fuhe.chen.vendingmachine.pojo.Commodity">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="commodity_name" jdbcType="VARCHAR" property="commodityName" />
+        <result column="price" jdbcType="DECIMAL" property="price" />
+        <result column="category_id" jdbcType="INTEGER" property="categoryId" />
+        <result column="commodity_status" jdbcType="INTEGER" property="commodityStatus" />
+        <result column="picture" jdbcType="VARCHAR" property="picture" />
+        <result column="comment" jdbcType="VARCHAR" property="comment" />
+        <association property="category" column="category_id" select="com.fuhe.chen.vendingmachine.dao.CategoryDao.findOne"/>
+    </resultMap>
+
+    <select id="findOne" resultMap="CommodityMap">
+        select
+        id,commodity_name,price,category_id,commodity_status,picture,comment
+        from
+        commodity
+        where
+        id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <select id="findAll" resultMap="CommodityMap">
+        select
+        id,commodity_name,price,category_id,commodity_status,picture,comment
+        from
+        commodity
+    </select>
+
+    <insert id="addCommodity" parameterType="com.fuhe.chen.vendingmachine.pojo.Commodity">
+        insert into
+        commodity(commodity_name,price,category_id,commodity_status)
+        values (
+            #{commodityName,jdbcType=INTEGER},
+            #{price,jdbcType=DECIMAL},
+            #{categoryId,jdbcType=INTEGER},
+            #{commodityStatus,jdbcType=INTEGER}
+        )
+    </insert>
+
+    <update id="updateCommodity" parameterType="com.fuhe.chen.vendingmachine.pojo.Commodity">
+        update
+        commodity
+        <set>
+            <if test="commodityName != null">
+                commodity_name = #{commodityName,jdbcType=INTEGER},
+            </if>
+            <if test="price != null">
+                price = #{price,jdbcType=DECIMAL},
+            </if>
+            <if test="categoryId != null">
+                category_id = #{categoryId,jdbcType=INTEGER},
+            </if>
+            <if test="commodityStatus != null">
+                commodity_status = #{commodityStatus,jdbcType=INTEGER}
+            </if>
+        </set>
+        where id=#{id,jdbcType=INTEGER}
+    </update>
+
+    <delete id="deleteCommodity" parameterType="Integer">
+        delete
+        from
+        commodity
+        where
+         id=#{id,jdbcType=INTEGER}
+    </delete>
+
+</mapper>

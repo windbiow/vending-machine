@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>贩卖机首页</title>
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <div class="page-header">
+                <h1>
+                    <small>自动贩卖机</small>
+                </h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="row clearfix">
+        <div class="col-md-4 column">
+<!--            <a class="btn btn-info" href="#">新增书籍</a>-->
+        </div>
+        <div class="col-md-4 column">
+        </div>
+        <div class="col-md-4 column">
+            <form method="post" action="#" class="form-inline">
+                <div class="form-group">
+                    <input type="text" class="form-control" id="bookName" name="bookName" placeholder="饮料名">
+                </div>
+                <button type="submit" class="btn btn-info">查询</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <table class="table table-hover table-striped">
+                <thead>
+                <tr>
+                    <th>商品名称</th>
+                    <th>价格</th>
+                    <th>数量</th>
+                    <th>商品分类</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                    <tr th:each="commodity : ${commodity}">
+                        <th th:text="${commodity.commodityName}"></th>
+                        <th th:text="${commodity.price}"></th>
+                        <th th:text="${commodity.count}"></th>
+                        <th th:text="${commodity.categoryName}"></th>
+                        <th>
+                            <button  type="button" class="btn btn-default"
+                                    th:onclick="'javascript:buy('+${commodity.id}+');'" >购买</button>|
+                            <button  type="button" class="btn btn-default"
+                                    th:onclick="'javascript:append('+${commodity.id}+');'" >加入购物车</button>
+                        </th>
+                    </tr>
+                </tbody>
+            </table>
+            <button  type="button" class="btn btn-info"
+                     th:onclick="'javascript:settleShoppingCart();'" >结算购物车</button>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+
+function buy(data){
+    $.ajax({
+        "url":"/buy",
+        "type":"POST",
+        "data":{
+            'commodityId':data,
+            'machineId':[[${machineId}]],
+            'count':1
+        },
+        "success":function(data){
+            // console.log(data)
+            openwin(data)
+        },
+        "error":function(){
+            alert('购买失败')
+        }
+    });
+}
+
+function append(data){
+    $.ajax({
+        "url":"/append",
+        "type":"POST",
+        "data":{
+            'commodityId':data,
+            'machineId':[[${machineId}]],
+            'count':1
+        },
+        "success":function(data){
+            alert(data)
+        },
+        "error":function(){
+            alert('添加失败')
+        }
+    });
+}
+
+function settleShoppingCart(){
+    $.ajax({
+        "url":"/settleShoppingCart",
+        "type":"POST",
+        "data":{
+            'machineId':[[${machineId}]]
+        },
+        "success":function(data){
+            // console.log(data)
+            openwin(data)
+        },
+        "error":function(){
+            alert('结算失败')
+        }
+    });
+}
+
+function openwin(data) {
+
+    var  open =window.open ("", "newwindow", "height=400, width=800, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no");
+    open.document.write(data);
+
+}
+
+</script>
+</html>

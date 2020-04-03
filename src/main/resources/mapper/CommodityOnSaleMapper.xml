@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fuhe.chen.vendingmachine.dao.CommodityOnSaleDao">
+    <resultMap id="CommodityOnSaleMap" type="com.fuhe.chen.vendingmachine.pojo.CommodityOnSale">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="commodity_id" jdbcType="INTEGER" property="commodityId" />
+        <result column="count" jdbcType="INTEGER" property="count" />
+        <result column="machine_id" jdbcType="INTEGER" property="machineId" />
+        <association property="commodity" column="commodity_id" select="com.fuhe.chen.vendingmachine.dao.CommodityDao.findOne"/>
+    </resultMap>
+    
+    <select id="findByCondition" resultMap="CommodityOnSaleMap">
+        select * from commodity_onsale
+        <where>
+            <if test="machineId != null">
+                and machine_id = #{machineId,jdbcType=INTEGER}
+            </if>
+            <if test="commodityId != null">
+                and commodity_id = #{commodityId,jdbcType=INTEGER}
+            </if>
+            <if test="count != null">
+                and count &lt;= #{count,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+
+    <select id="findOne" resultType="com.fuhe.chen.vendingmachine.pojo.CommodityOnSale">
+        select * from commodity_onsale
+        where commodity_id = #{commodityId,jdbcType=INTEGER}
+    </select>
+
+    <update id="updateCommodityOnSale" parameterType="com.fuhe.chen.vendingmachine.pojo.CommodityOnSale">
+        update commodity_onsale
+        set count = #{count,jdbcType=INTEGER}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <delete id="deleteCommodityOnSale" parameterType="Integer">
+        delete
+        from
+        commodity_onsale
+        where
+        commodity_id = #{id,jdbcType=INTEGER}
+    </delete>
+</mapper>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fuhe.chen.vendingmachine.dao.MachineDao">
+
+    <resultMap id="CategoryMap" type="com.fuhe.chen.vendingmachine.pojo.Machine">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <id column="place" jdbcType="VARCHAR" property="place"/>
+        <id column="machine_status" jdbcType="INTEGER" property="machineStatus"/>
+        <id column="stock" jdbcType="INTEGER" property="stock"/>
+    </resultMap>
+
+    <select id="findOne" resultMap="CategoryMap">
+        select * from machine
+        where id = #{id}
+    </select>
+</mapper>

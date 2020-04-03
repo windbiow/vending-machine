@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+<style type="text/css">
+    a { color:#000;}
+    .pagination{
+        overflow:hidden;
+        margin:0;
+        padding:10px 10px 6px 10px;
+        border-top:1px solid #f60;
+        _zoom:1;
+    }
+    .pagination *{
+        display:inline;
+        float:left;
+        margin:0;
+        padding:0;
+        font-size:12px;
+    }
+    .pagination i{
+        float:none;
+        padding-right:1px;
+    }
+
+    .pagination li{
+        list-style:none;
+        margin:0 5px;
+    }
+    .pagination li li{
+        position:relative;
+        margin:-2px 0 0;
+        font-family: Arial, Helvetica, sans-serif
+    }
+
+    .pagination li li a{
+        margin:0 1px;
+        padding:0 4px;
+        border:3px double #fff;
+    +border-color:#eee;
+        background:#eee;
+        color:#06f;
+        text-decoration:none;
+    }
+    .pagination li li a:hover{
+        background:#f60;
+        border-color:#fff;
+    +border-color:#f60;
+        color:#fff;
+    }
+
+    .currentState {
+        background:#f60;
+    }
+</style>
+<body>
+
+
+
+<ul class="pagination" th:fragment="pageNav(pageInfo, prefix,suffix)">
+    <th:block th:if="${pageInfo.pages > 1}">
+        <th:block th:if="${pageInfo.hasPreviousPage}">
+            <li class="prev"><a th:href="@{'/'+${prefix}+'/page/'+${pageInfo.prePage}+${suffix}}" class="glyphicon glyphicon-chevron-left"></a></li>
+        </th:block>
+
+
+        <th:block th:each="navIndex :${ pageInfo.navigatepageNums}">
+            <li th:class="${pageInfo.pageNum==navIndex}?'currentState':''"><a th:href="@{'/'+${prefix}+'/page/'+ ${navIndex}+${suffix}}"
+                                                                              th:text="${navIndex}"></a></li>
+        </th:block>
+
+
+        <th:block th:if="${pageInfo.hasNextPage}" >
+            <li class="next"><a th:href="@{'/'+${prefix}+'/page/'+${pageInfo.nextPage}+${suffix}}" class="glyphicon glyphicon-chevron-right"></a></li>
+        </th:block>
+    </th:block>
+</ul>
+
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>账单管理</title>
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+<body style="padding-top: 50px;text-align: center">
+   <div th:replace="admin/header::headerBody('commodity')"></div>
+
+   <div class="container">
+
+       <div class="row clearfix">.
+           <div>
+               <a class="btn btn-info" th:href="@{/admin/commodity/add}">新增商品</a>
+           </div>
+           <div class="col-md-12 column">
+               <table class="table table-hover table-striped">
+                   <thead>
+                   <tr>
+                       <th>商品名称</th>
+                       <th>价格</th>
+                       <th>商品状态</th>
+                       <th>商品分类</th>
+                   </tr>
+                   </thead>
+
+                   <tbody>
+                   <tr th:each="commodity : ${commodities.list}">
+                       <th th:text="${commodity.commodityName}"></th>
+                       <th th:text="${commodity.price}"></th>
+                       <th th:text="${htmlCommons.getCommodityStatus(commodity.commodityStatus)}"></th>
+                       <th th:text="${commodity.category.categoryName}"></th>
+                       <th>
+                           <a class="btn btn-info" th:href="@{/admin/commodity/update/}+${commodity.id}" >修改</a>|
+                           <button type="button" class="btn btn-danger"
+                                   th:onclick="'javascript:deleteComm('+${commodity.id}+');'" >删除</button>
+                       </th>
+                   </tr>
+                   </tbody>
+               </table>
+           </div>
+           <div th:replace="common/macros::pageNav(${commodities},
+                                        'admin/order/query',
+                                        '')">
+
+           </div>
+
+       </div>
+   </div>
+</body>
+<script>
+    function deleteComm(data){
+        $.ajax({
+            "url":"/admin/commodity/deleteComm",
+            "type":"POST",
+            "data":{
+                'commodityId':data
+            },
+            "success":function(data){
+                alert(data);
+                window.location.reload();
+            },
+            "error":function(){
+                alert('删除失败')
+            }
+        });
+    }
+</script>
+</html>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fuhe.chen.vendingmachine.dao.CommoditySoldDao">
+    <insert id="addCommoditySold" parameterType="com.fuhe.chen.vendingmachine.pojo.CommoditySold">
+        insert into
+        commodity_sold
+        (commodity_name,price,count,category,order_id)
+        values(
+        #{commodityName,jdbcType=VARCHAR},
+        #{price,jdbcType=DECIMAL},
+        #{count,jdbcType=INTEGER},
+        #{category,jdbcType=VARCHAR},
+        #{OrderId,jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <select id="totalSalesCommodities" resultType="Integer">
+        select sum(count) from commodity_sold
+    </select>
+</mapper>

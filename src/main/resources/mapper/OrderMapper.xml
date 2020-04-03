@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fuhe.chen.vendingmachine.dao.OrderDao">
+
+    <resultMap id="OrderMap" type="com.fuhe.chen.vendingmachine.pojo.Order">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="order_name" jdbcType="VARCHAR" property="orderName" />
+        <result column="user_id" jdbcType="VARCHAR" property="userId" />
+        <result column="amount" jdbcType="DECIMAL" property="amount" />
+        <result column="order_status" jdbcType="INTEGER" property="orderStatus" />
+        <result column="pay_method" jdbcType="INTEGER" property="payMethod" />
+        <result column="buyer_id" jdbcType="VARCHAR" property="buyerId" />
+        <result column="pay_id" jdbcType="VARCHAR" property="payId" />
+        <result column="place" jdbcType="VARCHAR" property="place" />
+        <result column="pay_date" jdbcType="VARCHAR" property="payDate" />
+        <result column="create_date" jdbcType="VARCHAR" property="createDate" />
+        <result column="machine_id" jdbcType="INTEGER" property="machineId" />
+    </resultMap>
+    <insert id="addOrder" parameterType="com.fuhe.chen.vendingmachine.pojo.Order">
+        insert into `order`
+        (id,order_name,user_id,amount,order_status,pay_method,buyer_id,pay_id,place,pay_date,create_date,machine_id)
+        values(
+        #{id,jdbcType=VARCHAR},
+        #{orderName,jdbcType=VARCHAR},
+        #{userId,jdbcType=VARCHAR},
+        #{amount,jdbcType=DECIMAL},
+        #{orderStatus,jdbcType=INTEGER},
+        #{payMethod,jdbcType=INTEGER},
+        #{buyerId,jdbcType=VARCHAR},
+        #{payId,jdbcType=VARCHAR},
+        #{place,jdbcType=VARCHAR},
+        #{payDate,jdbcType=VARCHAR},
+        #{createDate,jdbcType=VARCHAR},
+        #{machineId,jdbcType=INTEGER})
+    </insert>
+
+    <update id="updateOrder" parameterType="com.fuhe.chen.vendingmachine.pojo.Order">
+        update `order`
+        <set>
+            <if test="orderStatus != null">
+                order_status=#{orderStatus,jdbcType=INTEGER},
+            </if>
+            <if test="payMethod != null">
+                pay_method=#{payMethod,jdbcType=INTEGER},
+            </if>
+            <if test="buyerId != null">
+                buyer_id=#{buyerId,jdbcType=VARCHAR},
+            </if>
+            <if test="payId != null">
+                pay_id=#{payId,jdbcType=VARCHAR},
+            </if>
+            <if test="payDate != null">
+                pay_date=#{payDate,jdbcType=VARCHAR}
+            </if>
+        </set>
+        <where>
+            id = #{id,jdbcType=VARCHAR}
+        </where>
+    </update>
+
+    <select id="totalSalesAmount" resultType="Double">
+        select sum(amount) from `order` where order_status = 1
+    </select>
+
+    <select id="totalSalesOrders" resultType="Integer">
+        select count(*) from `order`    where order_status = 1
+    </select>
+
+    <select id="findAll" resultMap="OrderMap">
+        select
+        id,order_name,user_id,amount,order_status,pay_method,buyer_id,pay_id,place,pay_date,create_date,machine_id
+        from
+        `order`
+        order by id desc
+    </select>
+    
+    <select id="findByCondition" resultMap="OrderMap">
+         select
+        id,order_name,user_id,amount,order_status,pay_method,buyer_id,pay_id,place,pay_date,create_date,machine_id
+        from
+        `order`
+        <where>
+            <if test="orderStatus != null">
+            and    order_status=#{orderStatus,jdbcType=INTEGER}
+            </if>
+            <if test="payMethod != null">
+            and    pay_method=#{payMethod,jdbcType=INTEGER}
+            </if>
+            <if test="place != null">
+            and    place=#{payMethod,jdbcType=VARCHAR}
+            </if>
+        </where>
+        order by id desc
+    </select>
+
+    <select id="findMachineId" resultType="Integer">
+        select machine_id from `order`
+        where order_name = #{orderName,jdbcType=VARCHAR}
+    </select>
+</mapper>

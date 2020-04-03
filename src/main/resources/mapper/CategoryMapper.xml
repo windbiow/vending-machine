@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fuhe.chen.vendingmachine.dao.CategoryDao">
+
+    <resultMap id="CategoryMap" type="com.fuhe.chen.vendingmachine.pojo.Category">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <id column="category_name" jdbcType="VARCHAR" property="categoryName"/>
+    </resultMap>
+
+    <select id="findOne" resultMap="CategoryMap">
+        select
+        id,category_name
+        from
+        category
+        where
+        id = #{id}
+    </select>
+
+    <select id="findAll" resultMap="CategoryMap">
+        select
+        id,category_name
+        from
+        category
+    </select>
+</mapper>
