@@ -11,15 +11,8 @@ public interface ErrorConstant {
         static final String CAN_NOT_FIND_PARAM_TO_CONTIUNE = "找不到参数继续运行";
     }
 
-    interface Article {
-        static final String UPDATE_ARTICLE_FAIL = "更新文章失败";
-        static final String ADD_NEW_ARTICLE_FAIL = "添加文章失败";
-        static final String DELETE_ARTICLE_ERROR = "删除文章失败";
-        static final String TITLE_IS_TOO_LONG = "文章标题过长";
-        static final String TITLE_CAN_NOT_EMPTY = "文章标题不能为空";
-        static final String CONTENT_CAN_NOT_EMPTY = "文章内容不能为空";
-        static final String CONTENT_IS_TOO_LONG = "文章字数超过限制";
-
+    interface ShoppingCart {
+        static final String SHOPPINGCART_IS_NULL = "购物车中没有商品!请先将商品添加购物车";
     }
 
     interface Att {

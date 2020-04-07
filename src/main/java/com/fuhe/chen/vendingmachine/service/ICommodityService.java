@@ -19,7 +19,7 @@ public interface ICommodityService {
      * 根据在售商品主键查询商品
      * @return CommodityInMachine 在售商品信息
      */
-    CommodityInMachine queryCommodity(Integer commodityId);
+    CommodityInMachine queryCommodity(Integer commodityId,Integer machineId);
 
 
     /**

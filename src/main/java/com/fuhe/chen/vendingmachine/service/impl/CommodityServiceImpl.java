@@ -38,15 +38,15 @@ public class CommodityServiceImpl implements ICommodityService {
     CategoryDao categoryDao;
 
     @Override
-    public CommodityInMachine queryCommodity(Integer commodityId) {
-        return queryCommodity(null,commodityId,null).get(0);
+    public CommodityInMachine queryCommodity(Integer commodityId,Integer machineId) {
+        return queryCommodity(machineId,commodityId,null).get(0);
     }
 
     @Override
     public List<CommodityInMachine> queryCommodity(Integer machineID,Integer commodityID,Integer count) {
         List<CommodityOnSale> list= commodityOnSaleDao.findByCondition(machineID,commodityID,count);
         List<CommodityInMachine> commodity= list.stream().map(commodityOnSale -> new CommodityInMachine(
-                commodityOnSale.getId(),
+                commodityOnSale.getCommodityId(),
                 commodityOnSale.getCommodity().getCommodityName(),
                 commodityOnSale.getCommodity().getPrice(),
                 commodityOnSale.getCommodity().getCategory().getCategoryName(),

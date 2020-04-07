@@ -3,6 +3,9 @@ package com.fuhe.chen.vendingmachine.alipay;
 import java.io.FileWriter;
 import java.io.IOException;
 
+/**
+ * 支付宝相关参数
+ */
 public class AlipayConfig {
     // 商户appid
     public static String APPID = "2016102400749511";
@@ -11,7 +14,7 @@ public class AlipayConfig {
     // 服务器异步通知页面路径 需http://或者https://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
     public static String notify_url = "http://s30453o259.zicp.vip/getNotify";
     // 页面跳转同步通知页面路径 需http://或者https://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问 商户可以自定义同步跳转地址
-    public static String return_url = "http://s30453o259.zicp.vip/";
+    public static String return_url = "http://s30453o259.zicp.vip/index/1";
     // 请求网关地址
     public static String URL = "https://openapi.alipaydev.com/gateway.do";
     // 编码

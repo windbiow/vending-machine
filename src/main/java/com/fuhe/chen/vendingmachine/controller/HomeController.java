@@ -1,8 +1,10 @@
 package com.fuhe.chen.vendingmachine.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.fuhe.chen.vendingmachine.alipay.Alipay;
 import com.fuhe.chen.vendingmachine.common.redis.RedisUtils;
 import com.fuhe.chen.vendingmachine.common.utils;
+import com.fuhe.chen.vendingmachine.constant.ErrorConstant;
 import com.fuhe.chen.vendingmachine.dto.CommodityInMachine;
 import com.fuhe.chen.vendingmachine.pojo.*;
 import com.fuhe.chen.vendingmachine.service.ICommodityService;
@@ -62,6 +64,15 @@ public class HomeController {
     }
 
 
+    @GetMapping({"/phone/index/{machineId}"})
+    @ResponseBody
+    public String phoneIndex(Model model,@PathVariable int machineId){
+        List<CommodityInMachine> commodity = machineService.queryCommodity(machineId);
+        String json=JSON.toJSONString(commodity);
+        return json;
+    }
+
+
     /**
      * 用户购买动作
      * 生成待支付订单
@@ -76,7 +87,7 @@ public class HomeController {
         Double price = 0D;
 
 
-        CommodityInMachine commodity= commodityService.queryCommodity(Integer.valueOf(commodityId));
+        CommodityInMachine commodity= commodityService.queryCommodity(Integer.valueOf(commodityId),Integer.valueOf(machineId));
         commodityMap.put(commodity,count);
         price = count*commodity.getPrice();
 
@@ -107,6 +118,7 @@ public class HomeController {
         return Alipay.doPay(tradeNo,orderPrice,commodityName,body,String.valueOf(machineId));
     }
 
+
     /**
      * 用户结算购物车
      * 生成待支付订单
@@ -120,14 +132,14 @@ public class HomeController {
         Map<Integer,Integer> map = shoppingCartService.getShoppingCart(machineId);
 
         if(null==map){
-            return "请先将商品添加购物车";
+            return ErrorConstant.ShoppingCart.SHOPPINGCART_IS_NULL;
         }
 
         Map<CommodityInMachine,Integer> commodityMap = new HashMap<CommodityInMachine, Integer>();
         Double price = 0D;
 
         for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
-            CommodityInMachine commodity= commodityService.queryCommodity(entry.getKey());
+            CommodityInMachine commodity= commodityService.queryCommodity(entry.getKey(),machineId);
             commodityMap.put(commodity,entry.getValue());
             price = price + commodity.getPrice()*(entry.getValue());
         }
@@ -158,6 +170,7 @@ public class HomeController {
         //向支付宝提供订单信息并获取支付链接
         return Alipay.doPay(tradeNo,orderPrice,commodityName,body,String.valueOf(machineId));
     }
+
 
     @RequestMapping("/getNotify")
     public void getNotify(HttpServletRequest request, HttpServletResponse response){

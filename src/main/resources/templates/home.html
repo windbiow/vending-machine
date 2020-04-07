@@ -115,7 +115,13 @@ function settleShoppingCart(){
         },
         "success":function(data){
             // console.log(data)
-            openwin(data)
+            if(data == '购物车中没有商品!请先将商品添加购物车')
+            {
+                alert(data)
+            }else{
+                openwin(data)
+            }
+
         },
         "error":function(){
             alert('结算失败')

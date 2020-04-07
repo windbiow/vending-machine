@@ -18,6 +18,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.alipay.api.AlipayConstants.*;
+
+/**
+ * 支付宝静态方法
+ */
 @Component
 public class Alipay {
 
@@ -52,6 +56,36 @@ public class Alipay {
         }
         return null;
     }
+
+    public static String doPay2(String outTradeNo,String totalAmount,String subject,String body,String machineId){
+
+        //获得初始化的AlipayClient
+        AlipayClient alipayClient = new DefaultAlipayClient(AlipayConfig.URL,
+                AlipayConfig.APPID,
+                AlipayConfig.RSA_PRIVATE_KEY,
+                AlipayConfig.FORMAT,
+                AlipayConfig.CHARSET,
+                AlipayConfig.ALIPAY_PUBLIC_KEY,
+                AlipayConfig.SIGNTYPE);
+        //设置请求参数
+        AlipayTradePrecreateRequest  alipayRequest = new AlipayTradePrecreateRequest ();
+        alipayRequest.setNotifyUrl(AlipayConfig.notify_url);
+
+        alipayRequest.setBizContent("{\"out_trade_no\":\""+ outTradeNo +"\","
+                + "\"total_amount\":\""+ totalAmount +"\","
+                + "\"subject\":\""+ subject +"\","
+                + "\"body\":\""+ body +"\","
+                + "\"product_code\":\"FAST_INSTANT_TRADE_PAY\"}");
+        try{
+            String result = alipayClient.execute(alipayRequest).getBody();
+            LOGGER.info(result);
+            return result;
+        }catch (Exception e){
+
+        }
+        return null;
+    }
+
 
     /**
      * 支付宝的验签方法
