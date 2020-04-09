@@ -29,10 +29,32 @@
         where commodity_id = #{commodityId,jdbcType=INTEGER}
     </select>
 
+    <select id="findStock" parameterType="com.fuhe.chen.vendingmachine.pojo.CommodityOnSale" resultType="Integer">
+        select count from commodity_onsale
+        <where>
+            <if test="machineId != null">
+                and machine_id = #{machineId,jdbcType=INTEGER}
+            </if>
+            <if test="commodityId != null">
+                and commodity_id = #{commodityId,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+
     <update id="updateCommodityOnSale" parameterType="com.fuhe.chen.vendingmachine.pojo.CommodityOnSale">
         update commodity_onsale
         set count = #{count,jdbcType=INTEGER}
-        where id = #{id,jdbcType=INTEGER}
+        <where>
+            <if test="id != null">
+                and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="machineId != null">
+                and machine_id = #{machineId,jdbcType=INTEGER}
+            </if>
+            <if test="commodityId != null">
+                and commodity_id = #{commodityId,jdbcType=INTEGER}
+            </if>
+        </where>
     </update>
 
     <delete id="deleteCommodityOnSale" parameterType="Integer">
@@ -40,6 +62,8 @@
         from
         commodity_onsale
         where
-        commodity_id = #{id,jdbcType=INTEGER}
+        commodity_id = #{commodityId,jdbcType=INTEGER}
     </delete>
+
+
 </mapper>

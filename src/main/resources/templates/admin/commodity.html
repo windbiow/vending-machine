@@ -21,6 +21,7 @@
                    <thead>
                    <tr>
                        <th>商品名称</th>
+                       <th>商品图片</th>
                        <th>价格</th>
                        <th>商品状态</th>
                        <th>商品分类</th>
@@ -30,6 +31,7 @@
                    <tbody>
                    <tr th:each="commodity : ${commodities.list}">
                        <th th:text="${commodity.commodityName}"></th>
+                       <th><img th:src="@{${commodity.picture}}" class="img-rounded"  style="width: 100px; height: 100px;"/> </th>
                        <th th:text="${commodity.price}"></th>
                        <th th:text="${htmlCommons.getCommodityStatus(commodity.commodityStatus)}"></th>
                        <th th:text="${commodity.category.categoryName}"></th>

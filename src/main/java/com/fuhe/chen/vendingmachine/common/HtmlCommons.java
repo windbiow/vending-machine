@@ -44,6 +44,37 @@ public class HtmlCommons {
     }
 
     /**
+     * 根据数字返回商品状态
+     * @param status
+     * @return
+     */
+    public String getMachineStock(Integer status){
+        switch (status){
+            case 0:
+                return "正常";
+            case 1:
+                return "缺货";
+        }
+        return null;
+    }
+
+    /**
+     * 根据数字返回商品状态
+     * @param status
+     * @return
+     */
+    public String getMachineStatus(Integer status){
+        switch (status){
+            case 0:
+                return "正常";
+            case 1:
+                return "停止售货";
+        }
+        return null;
+    }
+
+
+    /**
      * 返回标准格式时间
      * @param time
      * @return

@@ -17,4 +17,10 @@ public interface IShoppingCartService {
      * @return
      */
     Map<Integer, Integer> getShoppingCart(Integer machineId);
+
+    /**
+     * 清空购物车
+     * @param machineId
+     */
+    void clear(String machineId);
 }

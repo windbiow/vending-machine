@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>贩卖机首页</title>
     <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" th:href="@{/static/css/myAlert.css}">
+    <script type="text/javascript" th:src="@{/static/js/myAlert.js}" charset="utf-8"></script>
     <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
 </head>
 <body>
@@ -39,6 +41,7 @@
             <table class="table table-hover table-striped">
                 <thead>
                 <tr>
+                    <th>商品图片</th>
                     <th>商品名称</th>
                     <th>价格</th>
                     <th>数量</th>
@@ -48,9 +51,10 @@
 
                 <tbody>
                     <tr th:each="commodity : ${commodity}">
-                        <th th:text="${commodity.commodityName}"></th>
+                        <th><img th:src="@{${commodity.picture}}" class="img-rounded"  style="width: 100px; height: 100px;"/> </th>
+                        <th th:id="commodityName+${commodity.id}" th:text="${commodity.commodityName}"></th>
                         <th th:text="${commodity.price}"></th>
-                        <th th:text="${commodity.count}"></th>
+                        <th th:id="count+${commodity.id}" th:text="${commodity.count}"></th>
                         <th th:text="${commodity.categoryName}"></th>
                         <th>
                             <button  type="button" class="btn btn-default"
@@ -63,6 +67,8 @@
             </table>
             <button  type="button" class="btn btn-info"
                      th:onclick="'javascript:settleShoppingCart();'" >结算购物车</button>
+            <button  type="button" class="btn btn-info"
+                     th:onclick="'javascript:clearShoppingCart('+${machineId}+');'">清空购物车</button>
         </div>
     </div>
 </div>
@@ -89,6 +95,8 @@ function buy(data){
 }
 
 function append(data){
+    // var str = $('#commodityName'+data).text()+"  x  " +$('#count'+data).text()+"<br>"
+    var str = $('#commodityName'+data).text()+"  x  1"
     $.ajax({
         "url":"/append",
         "type":"POST",
@@ -98,10 +106,24 @@ function append(data){
             'count':1
         },
         "success":function(data){
-            alert(data)
+                var myTip = {
+                    title: "Tips",
+                    msg: str+data,
+                    button:{
+                        ok: "ok"
+                    }
+                };
+                MyAlert(myTip)
         },
         "error":function(){
-            alert('添加失败')
+                var myTip = {
+                    title: "Tips",
+                    msg: "添加失败",
+                    button:{
+                        ok: "ok"
+                    }
+                };
+                MyAlert(myTip);
         }
     });
 }
@@ -117,7 +139,14 @@ function settleShoppingCart(){
             // console.log(data)
             if(data == '购物车中没有商品!请先将商品添加购物车')
             {
-                alert(data)
+                var myTip = {
+                    title: "Tips",
+                    msg: data,
+                    button:{
+                        ok: "ok"
+                    }
+                };
+                MyAlert(myTip);
             }else{
                 openwin(data)
             }
@@ -129,11 +158,40 @@ function settleShoppingCart(){
     });
 }
 
+function clearShoppingCart(data){
+    $.ajax({
+        "url":"/clear",
+        "type":"POST",
+        "data":{
+            'machineId':data
+        },
+        "success":function(data){
+            var myTip = {
+                title: "Tips",
+                msg: data,
+                button:{
+                    ok: "ok"
+                }
+            };
+            MyAlert(myTip);
+        },
+        "error":function(){
+            var myTip = {
+                title: "Tips",
+                msg: "操作失败",
+                button:{
+                    ok: "ok"
+                }
+            };
+            MyAlert(myTip);
+        }
+    });
+}
+
+
 function openwin(data) {
-
-    var  open =window.open ("", "newwindow", "height=400, width=800, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no");
+    var open = window.open("", "newwindow", "height=400, width=800, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no");
     open.document.write(data);
-
 }
 
 </script>

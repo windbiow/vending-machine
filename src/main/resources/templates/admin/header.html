@@ -15,7 +15,7 @@
         <div class="collapse navbar-collapse col-lg-4 col-lg-offset-4">
             <ul class="nav navbar-nav " role="tablist">
                 <li role="presentation" th:class="${active}=='index'?'active':''"><a th:href="@{/admin/index}">首页</a></li>
-                <li role="presentation" th:class="${active}=='machine'?'active':''"><a href="">机器管理</a></li>
+                <li role="presentation" th:class="${active}=='machine'?'active':''"><a th:href="@{/admin/machine}">机器管理</a></li>
                 <li role="presentation" th:class="${active}=='order'?'active':''"><a th:href="@{/admin/order}">账单</a></li>
                 <li role="presentation" th:class="${active}=='commodity'?'active':''"><a th:href="@{/admin/commodity}">商品管理</a></li>
             </ul>

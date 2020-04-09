@@ -15,19 +15,23 @@
            <div class="col-md-12 column">
                <div class="page-header">
                    <h1>
-                       <small>新增商品</small>
+                       <small>商品信息</small>
                    </h1>
                </div>
            </div>
-           <form id="commodityForm" method="post" >
+           <form id="commodityForm" method="post">
                <div class="form-group hidden">
                    <input type="text" class="form-control" id="commodityId" name="commodityId" th:value="${commodity?.getId()}">
+               </div>
+               <div class="form-group">
+                   <img th:src="@{${commodity?.getPicture()}}" style="width: 100px; height: 100px;"/>
+                   <input type="file" class="form-control" id="picture" name="picture">
                </div>
                <div class="form-group">
                    <input type="text" class="form-control" id="commodityName" name="commodityName" placeholder="商品名" th:value="${commodity?.getCommodityName()}">
                </div>
                <div class="form-group">
-                   <select class="form-control" name="categoryId">
+                   <select class="form-control" name="categoryId" id="categoryId">
                         <option th:each="category : ${categories}"
                                 th:value="${category.id}"
                                 th:text="${category.getCategoryName()}"
@@ -50,27 +54,48 @@
 </body>
 <script>
     function add(){
+        var fromData = new FormData();
+
+        fromData.append("commodityName",$('#commodityName').val());
+        fromData.append("categoryId",$('#categoryId option:selected').val());
+        fromData.append("price",$('#price').val());
+        fromData.append("picture",$('#picture')[0].files[0]);
+
         $.ajax({
-            "url":"/admin/commodity/addComm",
-            "type":"POST",
-            "data":$('#commodityForm').serialize(),
-            "success":function(data){
+            url:"/admin/commodity/addComm",
+            type:"POST",
+            async: false,
+            data: fromData,
+            processData : false, // 使数据不做处理
+            contentType : false, // 不要设置Content-Type请求头
+            success:function(data){
                 alert(data);
                 window.location.href="/admin/commodity";
             },
-            "error":function(){
+            error:function(){
                 alert('添加失败')
             }
         });
     }
 
     function update(){
+        var fromData = new FormData();
+
+        fromData.append("commodityId",$('#commodityId').val());
+        fromData.append("commodityName",$('#commodityName').val());
+        fromData.append("categoryId",$('#categoryId option:selected').val());
+        fromData.append("price",$('#price').val());
+        fromData.append("picture",$('#picture')[0].files[0]);
+
         $.ajax({
             "url":"/admin/commodity/updateComm",
-            "type":"POST",
-            "data":$('#commodityForm').serialize(),
-            "success":function(data){
-                alert(data)
+            type:"POST",
+            async: false,
+            data: fromData,
+            processData : false, // 使数据不做处理
+            contentType : false, // 不要设置Content-Type请求头
+            success:function(data){
+                alert(data);
                 window.location.href="/admin/commodity";
             },
             "error":function(){

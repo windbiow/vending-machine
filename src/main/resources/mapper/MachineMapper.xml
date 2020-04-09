@@ -2,15 +2,44 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.fuhe.chen.vendingmachine.dao.MachineDao">
 
-    <resultMap id="CategoryMap" type="com.fuhe.chen.vendingmachine.pojo.Machine">
+    <resultMap id="MachineMap" type="com.fuhe.chen.vendingmachine.pojo.Machine">
         <id column="id" jdbcType="INTEGER" property="id"/>
         <id column="place" jdbcType="VARCHAR" property="place"/>
         <id column="machine_status" jdbcType="INTEGER" property="machineStatus"/>
         <id column="stock" jdbcType="INTEGER" property="stock"/>
     </resultMap>
 
-    <select id="findOne" resultMap="CategoryMap">
+    <select id="findOne" resultMap="MachineMap">
         select * from machine
         where id = #{id}
     </select>
+
+    <select id="findAll" resultMap="MachineMap">
+        select * from machine
+        where  machine_status != 2
+    </select>
+
+    <insert id="addMachine" parameterType="com.fuhe.chen.vendingmachine.pojo.Machine">
+        insert into
+        machine(place,machine_status,stock)
+        values (
+            #{place,jdbcType=VARCHAR},
+            #{machineStatus,jdbcType=INTEGER},
+            #{stock,jdbcType=INTEGER}
+        )
+    </insert>
+
+    <update id="updateMachine" parameterType="com.fuhe.chen.vendingmachine.pojo.Machine">
+        update
+        machine
+        <set>
+            <if test="machineStatus != null">
+                machine_status = #{machineStatus,jdbcType=INTEGER},
+            </if>
+            <if test="stock != null">
+                stock = #{stock,jdbcType=INTEGER}
+            </if>
+        </set>
+        where id=#{id,jdbcType=INTEGER}
+    </update>
 </mapper>

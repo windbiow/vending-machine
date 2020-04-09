@@ -1,11 +1,15 @@
 package com.fuhe.chen.vendingmachine.pojo;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 在售商品
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class CommodityOnSale {
 
     /**
@@ -33,5 +37,14 @@ public class CommodityOnSale {
      */
     private Commodity commodity;
 
+    public CommodityOnSale(Integer machineId, Integer commodityId) {
+        this.commodityId = commodityId;
+        this.machineId = machineId;
+    }
 
+    public CommodityOnSale(Integer commodityId, Integer machineId,Integer count) {
+        this.commodityId = commodityId;
+        this.machineId = machineId;
+        this.count=count;
+    }
 }

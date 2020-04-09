@@ -3,6 +3,7 @@ package com.fuhe.chen.vendingmachine.service;
 import com.fuhe.chen.vendingmachine.dto.CommodityInMachine;
 import com.fuhe.chen.vendingmachine.pojo.Commodity;
 import com.fuhe.chen.vendingmachine.pojo.Machine;
+import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,7 +42,7 @@ public interface IMachineService {
      * 查询所有机器
      * @return
      */
-    List<Machine> findAll();
+    PageInfo<Machine> findAll(int page, int size);
 
     /**
      * 根据机器的运行状态和库存状态查询机器

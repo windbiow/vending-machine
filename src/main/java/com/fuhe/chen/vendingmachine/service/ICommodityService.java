@@ -74,4 +74,16 @@ public interface ICommodityService {
      * 查询所有标签信息
      */
     List<Category> findAllCategories();
+
+
+    /**
+     * 查询库存
+     */
+    Integer queryStock(Integer machineID, Integer commodityID);
+
+    /**
+     * 商品进货
+     * 增加库存
+     */
+    void addStock(Integer machineID, Integer commodityID,Integer count);
 }

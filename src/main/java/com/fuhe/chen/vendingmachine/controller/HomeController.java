@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -163,7 +164,7 @@ public class HomeController {
         //此处向缓存中添加已售商品信息
         commodityService.addCommoditySold(tradeNo,commodityMap);
 
-        String orderPrice = String.valueOf(price);
+        String orderPrice = new DecimalFormat("0.00").format(price);
         String commodityName = "贩卖机商品";
         String body = "贩卖机商品";
 
@@ -224,6 +225,17 @@ public class HomeController {
     public String append(Model model,@RequestParam String commodityId,@RequestParam String machineId,@RequestParam Integer count){
         shoppingCartService.append(commodityId,machineId,count);
         return "添加成功";
+    }
+
+    /**
+     * 清空购物车动作
+     * @return
+     */
+    @PostMapping("/clear")
+    @ResponseBody
+    public String clear(Model model,@RequestParam String machineId){
+        shoppingCartService.clear(machineId);
+        return "操作成功";
     }
 
 }

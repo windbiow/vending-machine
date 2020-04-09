@@ -11,11 +11,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.util.ResourceUtils;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -39,6 +39,11 @@ public class CommodityController {
         return "admin/commodity";
     }
 
+    @PostMapping("/upload")
+    public String upload(MultipartFile file,Integer commodityId){
+        return null;
+    }
+
     @RequestMapping("/add")
     public String add(Model model){
 
@@ -59,13 +64,31 @@ public class CommodityController {
 
     @RequestMapping("/addComm")
     @ResponseBody
-    public String addComm(String commodityName,String categoryId,String price){
+    public String addComm(String commodityName,String categoryId,String price,MultipartFile picture){
+
+        String imgPath = "#";
 
         Commodity commodity = new Commodity();
         commodity.setCommodityName(commodityName);
         commodity.setCategoryId(Integer.parseInt(categoryId));
         commodity.setCommodityStatus(0);
         commodity.setPrice(Double.parseDouble(price));
+
+        if (picture.isEmpty()){
+            commodity.setPicture(imgPath);
+        }else{
+            try{
+                String fileName = picture.getOriginalFilename();
+                String filePath = ResourceUtils.getURL("classpath:static").getPath().replace("%20"," ").replace('/', '\\')+"/img/";
+                File dest = new File(filePath+fileName);
+                imgPath = "/static/img/"+fileName;
+                picture.transferTo(dest);
+                commodity.setPicture(imgPath);
+                LOGGER.info("上传成功");
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
 
         commodityService.addCommodity(commodity);
 
@@ -74,7 +97,7 @@ public class CommodityController {
 
     @RequestMapping("/updateComm")
     @ResponseBody
-    public String updateComm(String commodityId,String commodityName,String categoryId,String price){
+    public String updateComm(String commodityId,String commodityName,String categoryId,String price,MultipartFile picture){
 
         Commodity commodity = new Commodity();
         commodity.setId(Integer.parseInt(commodityId));
@@ -82,6 +105,22 @@ public class CommodityController {
         commodity.setCategoryId(Integer.parseInt(categoryId));
         commodity.setCommodityStatus(0);
         commodity.setPrice(Double.parseDouble(price));
+
+        if (picture.isEmpty()){
+//            commodity.setPicture(imgPath);
+        }else{
+            try{
+                String fileName = picture.getOriginalFilename();
+                String filePath = ResourceUtils.getURL("classpath:static").getPath().replace("%20"," ").replace('/', '\\')+"/img/";
+                File dest = new File(filePath+fileName);
+                String imgPath = "/static/img/"+fileName;
+                picture.transferTo(dest);
+                commodity.setPicture(imgPath);
+                LOGGER.info("上传成功");
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
 
         commodityService.updateCommodity(commodity);
 

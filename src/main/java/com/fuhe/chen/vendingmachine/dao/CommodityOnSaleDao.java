@@ -26,9 +26,9 @@ public interface CommodityOnSaleDao {
 
     /**
      * 删除在售商品
-     * @param id
+     * @param commodityId
      */
-    void deleteCommodityOnSale(@Param("id") Integer id);
+    void deleteCommodityOnSale(@Param("commodityId") Integer commodityId);
 
     /**
      * 按条件查询
@@ -45,4 +45,9 @@ public interface CommodityOnSaleDao {
      * @return
      */
     CommodityOnSale findOne(@Param("commodityId") Integer commodityId);
+
+    /**
+     * 查询商品库存
+     */
+    Integer findStock(CommodityOnSale commodity);
 }

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>机器管理</title>
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+<body style="padding-top: 50px;text-align: center">
+   <div th:replace="admin/header::headerBody('machine')"></div>
+
+   <div class="container">
+       <div class="row clearfix">
+           <div class="col-md-12 column">
+               <div class="page-header">
+                   <h1>
+                       <small>库存列表</small>
+                   </h1>
+               </div>
+           </div>
+           <table class="table table-hover table-striped">
+               <thead>
+               <tr>
+                   <th>商品名称</th>
+                   <th>价格</th>
+                   <th>数量</th>
+                   <th>商品分类</th>
+                   <th>进货数量</th>
+               </tr>
+               </thead>
+
+               <tbody>
+               <tr th:each="commodity : ${commodity}">
+                   <th th:text="${commodity.commodityName}"></th>
+                   <th th:text="${commodity.price}"></th>
+                   <th th:text="${commodity.count}"></th>
+                   <th th:text="${commodity.categoryName}"></th>
+                   <th><input th:id="count+${commodity.id}" type="text" class="form-control" style="width: 50px"></th>
+                   <th><button class="btn btn-default"
+                               th:onclick="'javascript:addStock('+${commodity.id}+');'">进货</button> </th>
+               </tr>
+               </tbody>
+           </table>
+       </div>
+   </div>
+</body>
+<script>
+    function addStock(data){
+        $.ajax({
+            "url":"/admin/machine/addStock",
+            "type":"POST",
+            "data":{
+                'commodityId':data,
+                'stock':$('#count'+data).val(),
+                'machineId':[[${machineId}]]
+            },
+            "success":function(data){
+                alert(data);
+                window.location.reload();
+            },
+            "error":function(){
+                alert('操作失败')
+            }
+        });
+    }
+</script>
+</html>

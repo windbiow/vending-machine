@@ -30,12 +30,13 @@
 
     <insert id="addCommodity" parameterType="com.fuhe.chen.vendingmachine.pojo.Commodity">
         insert into
-        commodity(commodity_name,price,category_id,commodity_status)
+        commodity(commodity_name,price,category_id,commodity_status,picture)
         values (
             #{commodityName,jdbcType=INTEGER},
             #{price,jdbcType=DECIMAL},
             #{categoryId,jdbcType=INTEGER},
-            #{commodityStatus,jdbcType=INTEGER}
+            #{commodityStatus,jdbcType=INTEGER},
+            #{picture,jdbcType=VARCHAR}
         )
     </insert>
 
@@ -53,7 +54,10 @@
                 category_id = #{categoryId,jdbcType=INTEGER},
             </if>
             <if test="commodityStatus != null">
-                commodity_status = #{commodityStatus,jdbcType=INTEGER}
+                commodity_status = #{commodityStatus,jdbcType=INTEGER},
+            </if>
+            <if test="picture != null">
+                picture = #{picture,jdbcType=VARCHAR}
             </if>
         </set>
         where id=#{id,jdbcType=INTEGER}

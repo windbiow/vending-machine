@@ -7,6 +7,8 @@ import com.fuhe.chen.vendingmachine.pojo.CommodityOnSale;
 import com.fuhe.chen.vendingmachine.pojo.Machine;
 import com.fuhe.chen.vendingmachine.service.ICommodityService;
 import com.fuhe.chen.vendingmachine.service.IMachineService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,17 +39,20 @@ public class MachineServiceImpl implements IMachineService {
 
     @Override
     public void addMachine(Machine machine) {
-
+        machineDao.addMachine(machine);
     }
 
     @Override
     public void updateMachine(Machine machine) {
-
+        machineDao.updateMachine(machine);
     }
 
     @Override
-    public List<Machine> findAll() {
-        return null;
+    public PageInfo<Machine> findAll(int page,int size) {
+        PageHelper.startPage(page,size);
+        List<Machine> machines = machineDao.findAll();
+        PageInfo<Machine> pageInfo = new PageInfo<>(machines);
+        return pageInfo;
     }
 
     @Override

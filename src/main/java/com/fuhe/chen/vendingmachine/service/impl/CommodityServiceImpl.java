@@ -104,4 +104,17 @@ public class CommodityServiceImpl implements ICommodityService {
     public List<Category> findAllCategories() {
         return categoryDao.findAll();
     }
+
+    @Override
+    public Integer queryStock(Integer machineID, Integer commodityID) {
+        Integer count = commodityOnSaleDao.findStock(new CommodityOnSale(machineID,commodityID));
+        return count;
+    }
+
+    @Override
+    public void addStock(Integer machineID, Integer commodityID,Integer count) {
+        commodityOnSaleDao.updateCommodityOnSale(new CommodityOnSale(commodityID,machineID,count));
+    }
+
+
 }
