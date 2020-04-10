@@ -1,5 +1,6 @@
 package com.fuhe.chen.vendingmachine.service.impl;
 
+import com.fuhe.chen.vendingmachine.common.redis.RedisConstant;
 import com.fuhe.chen.vendingmachine.common.redis.RedisUtils;
 import com.fuhe.chen.vendingmachine.dao.CommoditySoldDao;
 import com.fuhe.chen.vendingmachine.dao.OrderDao;
@@ -26,8 +27,8 @@ public class StatisticServiceImpl implements IStatisticService {
     public Map<String, String> globalData() {
         Map<String, String> data = new HashMap<>();
 //        如果redis中有直接从redis中获取
-        if(redisUtils.hasKey("globalData")){
-            Map<Object, Object> redisData = redisUtils.hmget("globalData");
+        if(redisUtils.hasKey(RedisConstant.GlobalData.GLOBALDATA)){
+            Map<Object, Object> redisData = redisUtils.hmget(RedisConstant.GlobalData.GLOBALDATA;
             redisData.forEach((field,value)->{
                 data.put((String)field,(String)value);
             });
@@ -36,13 +37,13 @@ public class StatisticServiceImpl implements IStatisticService {
             String totalSalesOrders = String.valueOf(orderDao.totalSalesOrders());
             String totalSalesCommodities = String.valueOf(commoditySoldDao.totalSalesCommodities());
 
-            redisUtils.hset("globalData","totalSalesAmount",totalSalesAmount);
-            redisUtils.hset("globalData","totalSalesOrders",totalSalesOrders);
-            redisUtils.hset("globalData","totalSalesCommodities",totalSalesCommodities);
+            redisUtils.hset(RedisConstant.GlobalData.GLOBALDATA,RedisConstant.GlobalData.TOTALSALESAMOUNT,totalSalesAmount);
+            redisUtils.hset(RedisConstant.GlobalData.GLOBALDATA,RedisConstant.GlobalData.TOTALSALESORDERS,totalSalesOrders);
+            redisUtils.hset(RedisConstant.GlobalData.GLOBALDATA,RedisConstant.GlobalData.TOTALSALESCOMMODITIES,totalSalesCommodities);
 
-            data.put("totalSalesAmount",totalSalesAmount);
-            data.put("totalSalesOrders",totalSalesOrders);
-            data.put("totalSalesCommodities",totalSalesCommodities);
+            data.put(RedisConstant.GlobalData.TOTALSALESAMOUNT,totalSalesAmount);
+            data.put(RedisConstant.GlobalData.TOTALSALESORDERS,totalSalesOrders);
+            data.put(RedisConstant.GlobalData.TOTALSALESCOMMODITIES,totalSalesCommodities);
         }
         return data;
     }

@@ -9,6 +9,9 @@ import org.springframework.util.CollectionUtils;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Redis工具类
+ */
 @Component
 public class RedisUtils {
 

@@ -1,5 +1,6 @@
 package com.fuhe.chen.vendingmachine.service.impl;
 
+import com.fuhe.chen.vendingmachine.common.redis.RedisConstant;
 import com.fuhe.chen.vendingmachine.common.redis.RedisUtils;
 import com.fuhe.chen.vendingmachine.controller.admin.CommodityController;
 import com.fuhe.chen.vendingmachine.service.IShoppingCartService;
@@ -18,22 +19,33 @@ public class ShoppingCartServiceImpl  implements IShoppingCartService {
     @Autowired
     RedisUtils redisUtils;
 
+    /**
+     * 添加购物车
+     * @param commodityId
+     * @param machineId
+     * @param count
+     */
     @Override
     public void append(String commodityId, String machineId, Integer count) {
 
-        if(redisUtils.hHasKey("shoppingCart"+machineId,commodityId)){
-            redisUtils.hincr("shoppingCart"+machineId,commodityId,count);
+        if(redisUtils.hHasKey(RedisConstant.ShoppingCart.SHOPPINGCART+machineId,commodityId)){
+            redisUtils.hincr(RedisConstant.ShoppingCart.SHOPPINGCART+machineId,commodityId,count);
         }else{
-            redisUtils.hset("shoppingCart"+machineId,commodityId,count);
+            redisUtils.hset(RedisConstant.ShoppingCart.SHOPPINGCART+machineId,commodityId,count);
         }
     }
 
+    /**
+     * 获取购物车信息
+     * @param machineId
+     * @return
+     */
     @Override
     public Map<Integer, Integer> getShoppingCart(Integer machineId) {
         Map<Integer, Integer> returnMap = new HashMap<>();
 
-        if(redisUtils.hasKey("shoppingCart"+machineId)){
-            redisUtils.hmget("shoppingCart"+machineId).forEach((key,value)->{
+        if(redisUtils.hasKey(RedisConstant.ShoppingCart.SHOPPINGCART+machineId)){
+            redisUtils.hmget(RedisConstant.ShoppingCart.SHOPPINGCART+machineId).forEach((key,value)->{
                 returnMap.put(Integer.parseInt(key.toString()),Integer.parseInt(value.toString()));
             });
             return returnMap;
@@ -42,9 +54,13 @@ public class ShoppingCartServiceImpl  implements IShoppingCartService {
         return null;
     }
 
+    /**
+     * 清空购物车
+     * @param machineId
+     */
     @Override
     public void clear(String machineId) {
-        redisUtils.del("shoppingCart"+machineId);
+        redisUtils.del(RedisConstant.ShoppingCart.SHOPPINGCART+machineId);
         LOGGER.info("机器id:"+machineId+"的购物车记录已清空");
     }
 

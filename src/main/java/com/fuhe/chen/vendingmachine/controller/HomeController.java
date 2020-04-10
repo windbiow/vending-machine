@@ -192,6 +192,7 @@ public class HomeController {
 
                 //检测缓存中是否存在订单号,如果没有,说明订单已超时
                 if(!redisUtils.hasKey(out_trade_no)){
+                    //此处加入失效订单已支付处理
                     return;
                 }
 

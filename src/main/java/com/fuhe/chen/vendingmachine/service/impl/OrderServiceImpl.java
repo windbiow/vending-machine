@@ -1,5 +1,6 @@
 package com.fuhe.chen.vendingmachine.service.impl;
 
+import com.fuhe.chen.vendingmachine.common.redis.RedisConstant;
 import com.fuhe.chen.vendingmachine.common.redis.RedisUtils;
 import com.fuhe.chen.vendingmachine.dao.CommodityOnSaleDao;
 import com.fuhe.chen.vendingmachine.dao.CommoditySoldDao;
@@ -61,6 +62,14 @@ public class OrderServiceImpl implements IOrderService {
         return null;
     }
 
+    /**
+     * 支付成功处理
+     * @param out_trade_no 商户订单号
+     * @param trade_no      支付宝交易号
+     * @param payDate  支付时间
+     * @param buyer_id      购买者id
+     * @throws Exception
+     */
     @Transactional
     @Override
     public void orderToSuccess(String out_trade_no, String trade_no, String payDate, String buyer_id) throws Exception{
@@ -95,9 +104,11 @@ public class OrderServiceImpl implements IOrderService {
             commoditySoldDao.addCommoditySold(commoditySold);
         });
         Integer machineId = orderDao.findMachineId(out_trade_no);
+
+        //删除缓存信息
         redisUtils.del(out_trade_no);
-        redisUtils.del("globalData");
-        redisUtils.del("shoppingCart"+machineId);
+        redisUtils.del(RedisConstant.GlobalData.GLOBALDATA);
+        redisUtils.del(RedisConstant.ShoppingCart.SHOPPINGCART+machineId);
 
     }
 }

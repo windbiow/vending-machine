@@ -1,5 +1,6 @@
 package com.fuhe.chen.vendingmachine.controller.admin;
 
+import com.fuhe.chen.vendingmachine.common.utils;
 import com.fuhe.chen.vendingmachine.dao.CategoryDao;
 import com.fuhe.chen.vendingmachine.dao.CommodityDao;
 import com.fuhe.chen.vendingmachine.pojo.Category;
@@ -32,6 +33,11 @@ public class CommodityController {
     ICommodityService commodityService;
 
 
+    /**
+     * 商品首页
+     * @param model
+     * @return
+     */
     @RequestMapping("")
     public String commodity(Model model){
         PageInfo<Commodity> commodities = commodityService.queryAll(1,10);
@@ -39,11 +45,11 @@ public class CommodityController {
         return "admin/commodity";
     }
 
-    @PostMapping("/upload")
-    public String upload(MultipartFile file,Integer commodityId){
-        return null;
-    }
-
+    /**
+     * 跳转新增商品页面
+     * @param model
+     * @return
+     */
     @RequestMapping("/add")
     public String add(Model model){
 
@@ -52,6 +58,12 @@ public class CommodityController {
         return "admin/commodityDetail";
     }
 
+    /**
+     * 跳转修改商品信息页面
+     * @param model
+     * @param id
+     * @return
+     */
     @RequestMapping("/update/{id}")
     public String update(Model model,@PathVariable Integer id){
 
@@ -62,6 +74,14 @@ public class CommodityController {
         return "admin/commodityDetail";
     }
 
+    /**
+     * 新增单个商品信息
+     * @param commodityName
+     * @param categoryId
+     * @param price
+     * @param picture
+     * @return
+     */
     @RequestMapping("/addComm")
     @ResponseBody
     public String addComm(String commodityName,String categoryId,String price,MultipartFile picture){
@@ -73,28 +93,22 @@ public class CommodityController {
         commodity.setCategoryId(Integer.parseInt(categoryId));
         commodity.setCommodityStatus(0);
         commodity.setPrice(Double.parseDouble(price));
-
-        if (picture.isEmpty()){
-            commodity.setPicture(imgPath);
-        }else{
-            try{
-                String fileName = picture.getOriginalFilename();
-                String filePath = ResourceUtils.getURL("classpath:static").getPath().replace("%20"," ").replace('/', '\\')+"/img/";
-                File dest = new File(filePath+fileName);
-                imgPath = "/static/img/"+fileName;
-                picture.transferTo(dest);
-                commodity.setPicture(imgPath);
-                LOGGER.info("上传成功");
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-        }
+        commodity.setPicture(utils.upload(picture,imgPath));
 
         commodityService.addCommodity(commodity);
 
         return "添加成功";
     }
 
+    /**
+     * 修改单个商品信息
+     * @param commodityId
+     * @param commodityName
+     * @param categoryId
+     * @param price
+     * @param picture
+     * @return
+     */
     @RequestMapping("/updateComm")
     @ResponseBody
     public String updateComm(String commodityId,String commodityName,String categoryId,String price,MultipartFile picture){
@@ -106,27 +120,18 @@ public class CommodityController {
         commodity.setCommodityStatus(0);
         commodity.setPrice(Double.parseDouble(price));
 
-        if (picture.isEmpty()){
-//            commodity.setPicture(imgPath);
-        }else{
-            try{
-                String fileName = picture.getOriginalFilename();
-                String filePath = ResourceUtils.getURL("classpath:static").getPath().replace("%20"," ").replace('/', '\\')+"/img/";
-                File dest = new File(filePath+fileName);
-                String imgPath = "/static/img/"+fileName;
-                picture.transferTo(dest);
-                commodity.setPicture(imgPath);
-                LOGGER.info("上传成功");
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-        }
+        commodity.setPicture(utils.upload(picture,null));
 
         commodityService.updateCommodity(commodity);
 
         return "修改成功";
     }
 
+    /**
+     * 删除指定商品信息
+     * @param commodityId
+     * @return
+     */
     @RequestMapping("/deleteComm")
     @ResponseBody
     public String deleteComm(String commodityId){
