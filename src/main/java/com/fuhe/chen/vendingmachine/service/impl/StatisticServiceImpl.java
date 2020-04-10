@@ -28,7 +28,7 @@ public class StatisticServiceImpl implements IStatisticService {
         Map<String, String> data = new HashMap<>();
 //        如果redis中有直接从redis中获取
         if(redisUtils.hasKey(RedisConstant.GlobalData.GLOBALDATA)){
-            Map<Object, Object> redisData = redisUtils.hmget(RedisConstant.GlobalData.GLOBALDATA;
+            Map<Object, Object> redisData = redisUtils.hmget(RedisConstant.GlobalData.GLOBALDATA);
             redisData.forEach((field,value)->{
                 data.put((String)field,(String)value);
             });
