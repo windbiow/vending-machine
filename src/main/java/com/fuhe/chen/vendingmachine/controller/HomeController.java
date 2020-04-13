@@ -1,6 +1,7 @@
 package com.fuhe.chen.vendingmachine.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alipay.api.response.AlipayTradeQueryResponse;
 import com.fuhe.chen.vendingmachine.alipay.Alipay;
 import com.fuhe.chen.vendingmachine.common.redis.RedisUtils;
 import com.fuhe.chen.vendingmachine.common.utils;
@@ -22,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -215,6 +217,29 @@ public class HomeController {
         {
             //订单未通过
         }
+    }
+
+    /**
+     * 支付跳转页面
+     * @param request
+     * @param response
+     * @param model
+     * @return
+     */
+    @RequestMapping("/getReturn")
+    public String getReturn(HttpServletRequest request, HttpServletResponse response,Model model){
+        try{
+            //商户订单号
+            String out_trade_no = new String(request.getParameter("out_trade_no").getBytes("ISO-8859-1"),"UTF-8");
+            //支付宝交易号
+            String trade_no = new String(request.getParameter("trade_no").getBytes("ISO-8859-1"),"UTF-8");
+
+            model.addAttribute("out_trade_no",out_trade_no);
+            model.addAttribute("trade_no",trade_no);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return "return";
     }
 
     /**

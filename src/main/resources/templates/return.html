@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>title</title>
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+</head>
+<body>
+<div class="container" style="text-align: center;">
+    <form th:action="@{/doAfterPaySuccess}">
+        <input class="form-control hidden" name="out_trade_no" th:value="${out_trade_no}" />
+        <input class="form-control hidden" name="trade_no" th:value="${trade_no}" />
+        <button class="btn btn-info" style="margin-top: 100px"><h1>订单支付成功</h1></button>
+    </form>
+</div>
+</body>
+</html>
