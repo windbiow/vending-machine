@@ -15,6 +15,9 @@ public class HtmlCommons {
      * @return
      */
     public String getOrderStatus(Integer status){
+        if (status==null){
+            return null;
+        }
         switch (status){
             case 0:
                 return "未支付";
@@ -29,11 +32,32 @@ public class HtmlCommons {
     }
 
     /**
+     * 根据数字返回订单支付方式
+     * @param status
+     * @return
+     */
+    public String getOrderPayMethod(Integer status){
+        if (status==null){
+            return null;
+        }
+        switch (status){
+            case 0:
+                return "支付宝";
+            case 1:
+                return "微信";
+        }
+        return null;
+    }
+
+    /**
      * 根据数字返回商品状态
      * @param status
      * @return
      */
     public String getCommodityStatus(Integer status){
+        if (status==null){
+            return null;
+        }
         switch (status){
             case 0:
                 return "正常";
@@ -49,6 +73,9 @@ public class HtmlCommons {
      * @return
      */
     public String getMachineStock(Integer status){
+        if (status==null){
+            return null;
+        }
         switch (status){
             case 0:
                 return "正常";
@@ -64,6 +91,9 @@ public class HtmlCommons {
      * @return
      */
     public String getMachineStatus(Integer status){
+        if (status==null){
+            return null;
+        }
         switch (status){
             case 0:
                 return "正常";
@@ -80,6 +110,9 @@ public class HtmlCommons {
      * @return
      */
     public String getFormatTime(Long time){
+        if (time==null){
+            return null;
+        }
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date(time);
         return sdf.format(date);

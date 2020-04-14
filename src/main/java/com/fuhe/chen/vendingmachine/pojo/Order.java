@@ -3,6 +3,7 @@ package com.fuhe.chen.vendingmachine.pojo;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 订单
@@ -69,4 +70,9 @@ public class Order {
      * 机器主键
      */
     private Integer machineId;
+
+    /**
+     * 订单包含的商品清单
+     */
+    private List<CommoditySold> commoditySold;
 }

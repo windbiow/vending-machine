@@ -31,8 +31,8 @@ public class MachineController {
 
     @GetMapping("")
     public String index(Model model){
-        model.addAttribute("machines",machineService.findAll(1,15));
-        return "admin/machine";
+        model.addAttribute("machines",machineService.findAll(1,100));
+        return "admin/machine-list";
     }
 
     @GetMapping("/detail/{machineId}")

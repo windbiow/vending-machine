@@ -6,6 +6,7 @@ import com.fuhe.chen.vendingmachine.common.redis.RedisUtils;
 import com.fuhe.chen.vendingmachine.common.utils;
 import com.fuhe.chen.vendingmachine.dao.CommodityOnSaleDao;
 import com.fuhe.chen.vendingmachine.dao.CommoditySoldDao;
+import com.fuhe.chen.vendingmachine.dao.OrderDao;
 import com.fuhe.chen.vendingmachine.pojo.CommodityOnSale;
 import com.fuhe.chen.vendingmachine.pojo.CommoditySold;
 import com.fuhe.chen.vendingmachine.pojo.Machine;
@@ -28,6 +29,13 @@ import java.util.Map;
 @SpringBootTest
 class VendingMachineApplicationTests {
 
+    @Autowired
+    OrderDao orderDao;
+
+    @Test
+    void test4(){
+        System.out.println(orderDao.findById("FH20200402120453"));
+    }
 
     @Test
     void test3(){

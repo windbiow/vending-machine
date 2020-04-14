@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.fuhe.chen.vendingmachine.dao.CommoditySoldDao">
+
+    <resultMap id="CommoditySoldMap" type="com.fuhe.chen.vendingmachine.pojo.CommoditySold">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="commodity_name" jdbcType="VARCHAR" property="commodityName" />
+        <result column="price" jdbcType="DECIMAL" property="price" />
+        <result column="count" jdbcType="INTEGER" property="count" />
+        <result column="category" jdbcType="VARCHAR" property="category" />
+        <result column="order_id" jdbcType="VARCHAR" property="OrderId" />
+    </resultMap>
+
     <insert id="addCommoditySold" parameterType="com.fuhe.chen.vendingmachine.pojo.CommoditySold">
         insert into
         commodity_sold
@@ -17,4 +27,23 @@
     <select id="totalSalesCommodities" resultType="Integer">
         select sum(count) from commodity_sold
     </select>
+
+    <select id="findOne" resultMap="CommoditySoldMap">
+        select * from commodity_sold where order_id=#{orderName,jdbcType=VARCHAR}
+    </select>
+
+    <delete id="delAll" parameterType="java.util.List">
+        delete from
+        commodity_sold
+        where
+        order_id in
+        <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </delete>
+
+    <delete id="delete" parameterType="String">
+        delete from commodity_sold
+        where order_id = #{orderId,jdbcType=VARCHAR}
+    </delete>
 </mapper>

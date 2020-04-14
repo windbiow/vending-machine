@@ -40,9 +40,9 @@ public class CommodityController {
      */
     @RequestMapping("")
     public String commodity(Model model){
-        PageInfo<Commodity> commodities = commodityService.queryAll(1,10);
+        PageInfo<Commodity> commodities = commodityService.queryAll(1,100);
         model.addAttribute("commodities",commodities);
-        return "admin/commodity";
+        return "admin/commodity-list";
     }
 
     /**

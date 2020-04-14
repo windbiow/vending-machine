@@ -33,14 +33,18 @@ public interface OrderDao {
      */
     List<Order> findByCondition(@Param("orderStatus") Integer orderStatus,
                                 @Param("payMethod")  Integer payMethod,
-                                @Param("place")  String place);
+                                @Param("place")  String place,
+                                @Param("start")  Long start,
+                                @Param("end")  Long end,
+                                @Param("trade_no")  String trade_no
+    );
 
     /**
-     * 根据订单主键查询
-     * @param id
+     * 根据订单编号查询
+     * @param orderName
      * @return
      */
-    Order findById(int id);
+    Order findById(@Param("orderName") String orderName);
 
     /**
      * 修改订单信息
@@ -66,4 +70,16 @@ public interface OrderDao {
      * @return
      */
     Integer findMachineId(String orderName);
+
+    /**
+     * 批量删除
+     * @param orders
+     */
+    void delAll(List<String> orders);
+
+    /**
+     * 删除
+     * @param orderId
+     */
+    void delete(@Param("orderId") String orderId);
 }

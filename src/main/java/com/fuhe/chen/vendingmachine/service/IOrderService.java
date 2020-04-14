@@ -50,4 +50,24 @@ public interface IOrderService {
      * @param buyer_id      购买者id
      */
     void orderToSuccess(String out_trade_no, String trade_no, String payDate, String buyer_id) throws Exception;
+
+    /**
+     * 删除数组中订单id所对应的订单
+     * @param orders
+     */
+    void delAll(List<String> orders);
+
+
+    /**
+     * 删除对应id的订单
+     * @param orderId
+     */
+    void delete(String orderId);
+
+    /**
+     * 查询订单详情
+     * @param orderName
+     * @return
+     */
+    Order queryOrder(String orderName);
 }

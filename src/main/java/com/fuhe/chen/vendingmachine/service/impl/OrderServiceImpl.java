@@ -52,7 +52,13 @@ public class OrderServiceImpl implements IOrderService {
     @Override
     public PageInfo<Order> findByCondition(OrderCond cond, int pageNum, int size) {
         PageHelper.startPage(pageNum,size);
-        List<Order> orders = orderDao.findByCondition(cond.getOrderStatus(),cond.getPayMethod(),cond.getPlace());
+        List<Order> orders = orderDao.findByCondition(
+                cond.getOrderStatus(),
+                cond.getPayMethod(),
+                cond.getPlace(),
+                cond.getStart(),
+                cond.getEnd(),
+                cond.getTrade_no());
         PageInfo<Order> pageInfo = new PageInfo<>(orders);
         return pageInfo;
     }
@@ -77,7 +83,7 @@ public class OrderServiceImpl implements IOrderService {
         //修改订单状态,添加订单支付时间,订单支付人信息,支付方式,支付交易号
         Order order = new Order();
         order.setId(out_trade_no);
-        order.setPayDate(new SimpleDateFormat("yyyy-mm-dd hh:mm:ss").parse(payDate).getTime());
+        order.setPayDate(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(payDate).getTime());
         order.setBuyerId(buyer_id);
         order.setPayMethod(0);
         order.setPayId(trade_no);
@@ -110,5 +116,23 @@ public class OrderServiceImpl implements IOrderService {
         redisUtils.del(RedisConstant.GlobalData.GLOBALDATA);
         redisUtils.del(RedisConstant.ShoppingCart.SHOPPINGCART+machineId);
 
+    }
+
+
+    @Override
+    public void delAll(List<String> orders) {
+        orderDao.delAll(orders);
+        commoditySoldDao.delAll(orders);
+    }
+
+    @Override
+    public void delete(String orderId) {
+        orderDao.delete(orderId);
+        commoditySoldDao.delete(orderId);
+    }
+
+    @Override
+    public Order queryOrder(String orderName) {
+        return orderDao.findById(orderName);
     }
 }

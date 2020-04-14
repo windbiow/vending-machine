@@ -8,7 +8,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 
@@ -65,5 +68,48 @@ public class utils {
             }
         }
         return imgPath;
+    }
+
+    /**
+     * 分割商品编号字符串
+     * @param ids
+     * @return
+     */
+    public static List<String> getOrders(String ids){
+        String[] strs =ids.split(",");
+        List list = Arrays.asList(strs);
+        return list;
+    }
+
+    /**
+     * 将"yyyy-MM-dd"字符串转化为开始或结束时间(LONG)
+     * @param date
+     * @param name
+     * @return
+     */
+    public static Long getTime(String date,String name){
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        try
+        {
+            if (name.equals("start")){
+                Long returnNum=sdf.parse(date).getTime();
+                LOGGER.info("开始时间:"+returnNum);
+                return returnNum;
+            }
+            if (name.equals("end")){
+                Date end = sdf.parse(date);
+                Calendar c = Calendar.getInstance();
+                c.setTime(end);
+                c.add(Calendar.DAY_OF_MONTH,1);
+                Long returnNum=c.getTime().getTime();
+                LOGGER.info("结束时间:"+returnNum);
+                return returnNum;
+            }
+        }catch (Exception e){
+            LOGGER.info("字符串转换时间失败");
+            e.printStackTrace();
+        }
+        return null;
     }
 }

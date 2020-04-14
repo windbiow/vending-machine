@@ -16,6 +16,23 @@
         <result column="create_date" jdbcType="VARCHAR" property="createDate" />
         <result column="machine_id" jdbcType="INTEGER" property="machineId" />
     </resultMap>
+
+    <resultMap id="OrderMapByCommoditySold" type="com.fuhe.chen.vendingmachine.pojo.Order">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="order_name" jdbcType="VARCHAR" property="orderName" />
+        <result column="user_id" jdbcType="VARCHAR" property="userId" />
+        <result column="amount" jdbcType="DECIMAL" property="amount" />
+        <result column="order_status" jdbcType="INTEGER" property="orderStatus" />
+        <result column="pay_method" jdbcType="INTEGER" property="payMethod" />
+        <result column="buyer_id" jdbcType="VARCHAR" property="buyerId" />
+        <result column="pay_id" jdbcType="VARCHAR" property="payId" />
+        <result column="place" jdbcType="VARCHAR" property="place" />
+        <result column="pay_date" jdbcType="VARCHAR" property="payDate" />
+        <result column="create_date" jdbcType="VARCHAR" property="createDate" />
+        <result column="machine_id" jdbcType="INTEGER" property="machineId" />
+        <collection property="commoditySold" select="com.fuhe.chen.vendingmachine.dao.CommoditySoldDao.findOne" column="order_name" />
+    </resultMap>
+
     <insert id="addOrder" parameterType="com.fuhe.chen.vendingmachine.pojo.Order">
         insert into `order`
         (id,order_name,user_id,amount,order_status,pay_method,buyer_id,pay_id,place,pay_date,create_date,machine_id)
@@ -89,6 +106,15 @@
             <if test="place != null">
             and    place=#{payMethod,jdbcType=VARCHAR}
             </if>
+            <if test="start != null">
+                and    create_date &gt;= #{start,jdbcType=VARCHAR}
+            </if>
+            <if test="end != null">
+                and    create_date &lt; #{end,jdbcType=VARCHAR}
+            </if>
+            <if test="trade_no != null">
+                and    order_name=#{trade_no,jdbcType=VARCHAR}
+            </if>
         </where>
         order by id desc
     </select>
@@ -97,4 +123,30 @@
         select machine_id from `order`
         where order_name = #{orderName,jdbcType=VARCHAR}
     </select>
+
+    <delete id="delAll" parameterType="java.util.List">
+        delete
+        from
+        `order`
+        where
+        order_name
+        in
+        <foreach collection="list" open="(" separator="," close=")" index="index" item="item" >
+            #{item}
+        </foreach>
+    </delete>
+
+    <delete id="delete" parameterType="String">
+        delete from `order`
+        where order_name = #{orderId,jdbcType=VARCHAR}
+    </delete>
+
+    <select id="findById" parameterType="String" resultMap="OrderMapByCommoditySold">
+        select
+        id,order_name,user_id,amount,order_status,pay_method,buyer_id,pay_id,place,pay_date,create_date,machine_id
+        from `order`
+        where order_name = #{orderName,jdbcType=VARCHAR}
+    </select>
+
+
 </mapper>

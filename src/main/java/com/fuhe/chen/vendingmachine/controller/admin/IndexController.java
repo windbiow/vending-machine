@@ -39,6 +39,6 @@ public class IndexController {
     @GetMapping({"/","/index",""})
     public String index(Model model){
         model.addAllAttributes(statisticService.globalData());
-        return "admin/index";
+        return "admin/index1";
     }
 }
