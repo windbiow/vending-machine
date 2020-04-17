@@ -1,5 +1,6 @@
 package com.fuhe.chen.vendingmachine.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.fuhe.chen.vendingmachine.common.redis.RedisConstant;
 import com.fuhe.chen.vendingmachine.common.redis.RedisUtils;
 import com.fuhe.chen.vendingmachine.dao.CommodityOnSaleDao;
@@ -12,7 +13,10 @@ import com.fuhe.chen.vendingmachine.pojo.Order;
 import com.fuhe.chen.vendingmachine.service.IOrderService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +26,10 @@ import java.util.Map;
 
 @Service
 public class OrderServiceImpl implements IOrderService {
+
+    public static final Logger LOGGER = LoggerFactory.getLogger(OrderServiceImpl.class);
+
+    private final static String ORDERNAME="orders:";
 
     @Autowired
     OrderDao orderDao;
@@ -38,29 +46,43 @@ public class OrderServiceImpl implements IOrderService {
     @Override
     public void addOrder(Order order) {
         orderDao.addOrder(order);
+        redisUtils.delAll(ORDERNAME);
     }
 
     @Override
     public PageInfo<Order> findAll(int pageNum,int pageSize) {
-        PageHelper.startPage(pageNum,pageSize);
-        List<Order> orders = orderDao.findAll();
-        PageInfo<Order> pageInfo = new PageInfo<>(orders);
-
-        return pageInfo;
+        String key = ORDERNAME+pageNum+":"+pageSize;
+        if(redisUtils.hasKey(key)){
+            return (PageInfo<Order>) redisUtils.get(key);
+        }else{
+            PageHelper.startPage(pageNum,pageSize);
+            List<Order> orders = orderDao.findAll();
+            PageInfo<Order> pageInfo = new PageInfo<>(orders);
+            redisUtils.set(key,pageInfo);
+            return pageInfo;
+        }
     }
 
     @Override
     public PageInfo<Order> findByCondition(OrderCond cond, int pageNum, int size) {
-        PageHelper.startPage(pageNum,size);
-        List<Order> orders = orderDao.findByCondition(
-                cond.getOrderStatus(),
-                cond.getPayMethod(),
-                cond.getPlace(),
-                cond.getStart(),
-                cond.getEnd(),
-                cond.getTrade_no());
-        PageInfo<Order> pageInfo = new PageInfo<>(orders);
-        return pageInfo;
+        String key = ORDERNAME+pageNum+":"+size+":"+cond.getOrderStatus()+":"+cond.getPayMethod()+":"+cond.getTrade_no();
+        boolean flag = (cond.getTrade_no()==null)&&(cond.getStart()==null)&&(cond.getEnd()==null);
+        if(redisUtils.hasKey(key)&&flag){
+            return (PageInfo<Order>)redisUtils.get(key);
+        }else{
+            PageHelper.startPage(pageNum,size);
+            List<Order> orders = orderDao.findByCondition(
+                    cond.getOrderStatus(),
+                    cond.getPayMethod(),
+                    cond.getPlace(),
+                    cond.getStart(),
+                    cond.getEnd(),
+                    cond.getTrade_no());
+            PageInfo<Order> pageInfo = new PageInfo<>(orders);
+            redisUtils.set(key,pageInfo);
+            return pageInfo;
+        }
+
     }
 
     @Override
@@ -123,12 +145,14 @@ public class OrderServiceImpl implements IOrderService {
     public void delAll(List<String> orders) {
         orderDao.delAll(orders);
         commoditySoldDao.delAll(orders);
+        redisUtils.delAll(ORDERNAME);
     }
 
     @Override
     public void delete(String orderId) {
         orderDao.delete(orderId);
         commoditySoldDao.delete(orderId);
+        redisUtils.delAll(ORDERNAME);
     }
 
     @Override

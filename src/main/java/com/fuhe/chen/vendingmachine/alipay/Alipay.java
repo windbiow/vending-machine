@@ -51,7 +51,7 @@ public class Alipay {
         //设置请求参数
         AlipayTradePagePayRequest alipayRequest = new AlipayTradePagePayRequest();
         alipayRequest.setNotifyUrl(AlipayConfig.notify_url);
-        alipayRequest.setReturnUrl(AlipayConfig.return_url+machineId);
+        alipayRequest.setReturnUrl(AlipayConfig.return_url);
 
         alipayRequest.setBizContent("{\"out_trade_no\":\""+ outTradeNo +"\","
                 + "\"total_amount\":\""+ totalAmount +"\","
@@ -128,7 +128,6 @@ public class Alipay {
         try {
             return  AlipaySignature.rsaCheckV1(paramsMap, AlipayConfig.ALIPAY_PUBLIC_KEY, AlipayConfig.CHARSET, AlipayConfig.SIGNTYPE);
         } catch (AlipayApiException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             LOGGER.info("*********************验签失败********************");
             return false;

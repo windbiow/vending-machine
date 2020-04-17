@@ -3,6 +3,7 @@ package com.fuhe.chen.vendingmachine.controller;
 import com.alibaba.fastjson.JSON;
 import com.alipay.api.response.AlipayTradeQueryResponse;
 import com.fuhe.chen.vendingmachine.alipay.Alipay;
+import com.fuhe.chen.vendingmachine.common.ApiResponse;
 import com.fuhe.chen.vendingmachine.common.redis.RedisUtils;
 import com.fuhe.chen.vendingmachine.common.utils;
 import com.fuhe.chen.vendingmachine.constant.ErrorConstant;
@@ -69,10 +70,15 @@ public class HomeController {
 
     @GetMapping({"/phone/index/{machineId}"})
     @ResponseBody
-    public String phoneIndex(Model model,@PathVariable int machineId){
+    public ApiResponse phoneIndex(Model model,@PathVariable int machineId){
         List<CommodityInMachine> commodity = machineService.queryCommodity(machineId);
-        String json=JSON.toJSONString(commodity);
-        return json;
+        ApiResponse response = new ApiResponse();
+        response.setSuccess(true);
+        response.setCode(10000);
+        response.setMessage("调用成功");
+        response.setData(commodity);
+
+        return response;
     }
 
 

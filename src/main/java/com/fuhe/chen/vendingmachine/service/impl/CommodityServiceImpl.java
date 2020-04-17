@@ -22,6 +22,10 @@ import java.util.stream.Collectors;
 @Service
 public class CommodityServiceImpl implements ICommodityService {
 
+    private final static String COMMODIIES_ALL="commoditiesAll:";
+
+    private final static String CATEGRORIES="categories:";
+
     @Autowired
     IMachineService machineService;
 
@@ -71,11 +75,16 @@ public class CommodityServiceImpl implements ICommodityService {
 
     @Override
     public PageInfo<Commodity> queryAll(int pageNum, int size) {
-        PageHelper .startPage(pageNum,size);
-        List<Commodity> commodities = commodityDao.findAll();
-        PageInfo<Commodity> commodityPageInfo=new PageInfo<>(commodities);
-
-        return commodityPageInfo;
+        String key = COMMODIIES_ALL+pageNum+":"+size;
+        if (redisUtils.hasKey(key)){
+            return (PageInfo<Commodity>)redisUtils.get(key);
+        }else{
+            PageHelper .startPage(pageNum,size);
+            List<Commodity> commodities = commodityDao.findAll();
+            PageInfo<Commodity> commodityPageInfo=new PageInfo<>(commodities);
+            redisUtils.set(key,commodityPageInfo);
+            return commodityPageInfo;
+        }
     }
 
     @Override
@@ -86,11 +95,13 @@ public class CommodityServiceImpl implements ICommodityService {
     @Override
     public void addCommodity(Commodity commodity) {
         commodityDao.addCommodity(commodity);
+        redisUtils.delAll(COMMODIIES_ALL);
     }
 
     @Override
     public void updateCommodity(Commodity commodity) {
         commodityDao.updateCommodity(commodity);
+        redisUtils.delAll(COMMODIIES_ALL);
     }
 
     @Override
@@ -98,11 +109,18 @@ public class CommodityServiceImpl implements ICommodityService {
     public void deleteCommodity(Integer commodityId) {
         commodityDao.deleteCommodity(commodityId);
         commodityOnSaleDao.deleteCommodityOnSale(commodityId);
+        redisUtils.delAll(COMMODIIES_ALL);
     }
 
     @Override
     public List<Category> findAllCategories() {
-        return categoryDao.findAll();
+        if(redisUtils.hasKey(CATEGRORIES)){
+            return (List<Category>)redisUtils.get(CATEGRORIES);
+        }else{
+            List<Category> list = categoryDao.findAll();
+            redisUtils.set(CATEGRORIES,list);
+            return list;
+        }
     }
 
     @Override

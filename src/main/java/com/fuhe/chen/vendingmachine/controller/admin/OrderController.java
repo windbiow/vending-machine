@@ -81,14 +81,17 @@ public class OrderController {
         orderCond.setOrderStatus(orderStatus.equals("-1")?null:Integer.valueOf(orderStatus));
         orderCond.setPayMethod(payMethod.equals("-1")?null:Integer.valueOf(payMethod));
         orderCond.setPlace(place.equals("-1")?null:place);
-            if(!StringUtils.isEmpty(start)){
+            if(!start.equals("null")&&!StringUtils.isEmpty(start)){
                 orderCond.setStart(utils.getTime(start,"start"));
+                model.addAttribute("start",start);
             }
-            if(!StringUtils.isEmpty(end)){
+            if(!end.equals("null")&&!StringUtils.isEmpty(end)){
                 orderCond.setEnd(utils.getTime(end,"end"));
+                model.addAttribute("end",end);
             }
-        if(!StringUtils.isEmpty(trade_no)){
+        if(!trade_no.equals("null")&&!StringUtils.isEmpty(trade_no)){
             orderCond.setTrade_no(trade_no);
+            model.addAttribute("trade_no",trade_no);
         }
 
 
@@ -99,9 +102,7 @@ public class OrderController {
         model.addAttribute("orderStatus",orderStatus);
         model.addAttribute("payMethod",payMethod);
         model.addAttribute("place",place);
-        model.addAttribute("start",start);
-        model.addAttribute("end",end);
-        model.addAttribute("trade_no",trade_no);
+
 
         return "admin/order-list";
     }

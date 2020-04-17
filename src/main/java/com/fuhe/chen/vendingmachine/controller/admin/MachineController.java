@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.thymeleaf.util.StringUtils;
 
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class MachineController {
     @Autowired
     ICommodityService commodityService;
 
-    @GetMapping("")
+    @RequestMapping("")
     public String index(Model model){
         model.addAttribute("machines",machineService.findAll(1,100));
         return "admin/machine-list";
@@ -52,7 +53,11 @@ public class MachineController {
      */
     @PostMapping("/addMachine")
     @ResponseBody
-    public String addMachine(String place){
+    public String addMachine(@RequestParam String place){
+
+        if(StringUtils.isEmpty(place)){
+            return "地点不能为空";
+        }
 
         Machine machine = new Machine();
         machine.setPlace(place);

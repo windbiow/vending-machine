@@ -7,6 +7,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -74,6 +75,26 @@ public class RedisUtils {
         }
     }
 
+    /**
+     * 根据key模糊查询 来删除缓存
+     * @param key 键数组
+     */
+    public void delAll(String key){
+        if(key!=null){
+            redisTemplate.delete(getValues(key));
+        }
+    }
+
+    /**
+     * 根据字段模糊查询所有符合的key
+     * @param key 键
+     * @return Set<String>
+     */
+    public Set<String> getValues(String key) {
+        return key == null ? null : redisTemplate.keys(key+"*");
+    }
+
+
 //==============================================================String==============================================================================================================
 
     /**
@@ -84,6 +105,7 @@ public class RedisUtils {
     public Object get(String key) {
         return key == null ? null : redisTemplate.opsForValue().get(key);
     }
+
 
     /**
      * 放入缓存

@@ -1,6 +1,5 @@
 package com.fuhe.chen.vendingmachine.common;
 
-import com.fuhe.chen.vendingmachine.pojo.Commodity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ResourceUtils;
@@ -12,8 +11,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
-import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 
 public class utils {
 

@@ -32,10 +32,6 @@
                         <div class="layui-card-body ">
                             <form class="layui-form layui-col-space5" th:action="@{/admin/order/query}">
                                 <div class="layui-input-inline layui-show-xs-block">
-                                    <input class="layui-input" placeholder="开始日" name="start" id="start"></div>
-                                <div class="layui-input-inline layui-show-xs-block">
-                                    <input class="layui-input" placeholder="截止日" name="end" id="end"></div>
-                                <div class="layui-input-inline layui-show-xs-block">
                                     <select name="orderStatus">
                                         <option value="-1">库存状态</option>
                                         <option value="0" th:selected="${orderStatus}==0?true:false">正常</option>
@@ -60,10 +56,16 @@
                             </form>
                         </div>
                         <div class="layui-card-header">
-                            <button class="layui-btn layui-btn-danger" onclick="delAll()">
-                                <i class="layui-icon"></i>批量删除</button>
-<!--                            <button class="layui-btn" onclick="xadmin.open('添加用户','./order-add.html',800,600)">-->
-<!--                                <i class="layui-icon"></i>添加</button></div>-->
+                            <form id="machineForm" method="post">
+                                <div class="layui-input-inline">
+                                    <input type="text" lay-verify="required" autocomplete="off" class="layui-input" id="place" name="place" placeholder="所在地">
+                                </div>
+                                <button class="layui-btn layui-btn-danger" onclick="add()">
+                                    <i class="layui-icon"></i>新增机器</button>
+    <!--                            <button class="layui-btn" onclick="xadmin.open('添加用户','./order-add.html',800,600)">-->
+    <!--                                <i class="layui-icon"></i>添加</button>-->
+                            </form>
+                        </div>
                         <div class="layui-card-body ">
                             <table class="layui-table layui-form">
                                 <thead>
@@ -81,9 +83,13 @@
                                         <td th:text="${htmlCommons.getMachineStock(machine.stock)}">正常</td>
                                         <td th:text="${htmlCommons.getMachineStatus(machine.machineStatus)}">正常</td>
                                         <td class="td-manage">
-                                            <a title="查看" onclick="xadmin.open('编辑','order-view.html')" href="javascript:;">
+                                            <a title="查看" th:onclick="xadmin.open('查看',[[@{/admin/machine/detail/}+${machine.id}]])" href="javascript:;">
                                                 <i class="layui-icon">&#xe63c;</i></a>
-                                            <a title="删除" onclick="member_del(this,'要删除的id')" href="javascript:;">
+                                            <a title="停止售货" th:onclick="stop([[${machine.id}]])" href="javascript:;" th:if="${machine.machineStatus}!=1">
+                                                <i class="layui-icon">&#xe69a;</i></a>
+                                            <a title="开启售货" th:onclick="start([[${machine.id}]])" href="javascript:;" th:if="${machine.machineStatus}==1">
+                                                <i class="layui-icon">&#xe698;</i></a>
+                                            <a title="删除" th:onclick="deleteMachine(this,[[${machine.id}]])" href="javascript:;">
                                                 <i class="layui-icon">&#xe640;</i></a>
                                         </td>
                                     </tr>
@@ -114,62 +120,103 @@
             });
         });
 
-        /*用户-停用*/
-        function member_stop(obj, id) {
-            layer.confirm('确认要停用吗？',
-            function(index) {
-
-                if ($(obj).attr('title') == '启用') {
-
-                    //发异步把用户状态进行更改
-                    $(obj).attr('title', '停用');
-                    $(obj).find('i').html('&#xe62f;');
-
-                    $(obj).parents("tr").find(".td-status").find('span').addClass('layui-btn-disabled').html('已停用');
-                    layer.msg('已停用!', {
-                        icon: 5,
-                        time: 1000
-                    });
-
-                } else {
-                    $(obj).attr('title', '启用');
-                    $(obj).find('i').html('&#xe601;');
-
-                    $(obj).parents("tr").find(".td-status").find('span').removeClass('layui-btn-disabled').html('已启用');
-                    layer.msg('已启用!', {
-                        icon: 5,
-                        time: 1000
+        function add(){
+            $.ajax({
+                url:"/admin/machine/addMachine",
+                type:"POST",
+                data: $('#machineForm').serialize(),
+                success:function(data){
+                    if(data=="地点不能为空"){
+                        layer.msg(data, {
+                            icon: 2,time: 1000
+                        });
+                    }else{
+                        layer.msg(data, {
+                            icon: 1,time: 1000
+                        });
+                    }
+                },
+                error:function(){
+                    layer.msg('添加失败', {
+                        icon: 2,time: 1000
                     });
                 }
-
             });
         }
 
-        /*用户-删除*/
-        function member_del(obj, id) {
+
+        function deleteMachine(obj,data){
             layer.confirm('确认要删除吗？',
-            function(index) {
-                //发异步删除数据
-                $(obj).parents("tr").remove();
-                layer.msg('已删除!', {
-                    icon: 1,
-                    time: 1000
-                });
-            });
+                function() {
+                    $.ajax({
+                        url: "/admin/machine/update",
+                        type: "POST",
+                        data: {
+                            'machineId': data,
+                            'operation': 'delete'
+                        },
+                        success: function (data) {
+                            $(obj).parents("tr").remove();
+                            layer.msg(data, {
+                                icon: 1,time: 1000
+                            });
+                        },
+                        error: function () {
+                            layer.msg('操作失败', {
+                                icon: 1,time: 1000
+                            });
+                        }
+                    });
+                })
         }
 
-        function delAll(argument) {
+        function stop(data){
+            layer.confirm('确认要停止售货吗？',
+                function(){
+                    $.ajax({
+                        "url":"/admin/machine/update",
+                        "type":"POST",
+                        "data":{
+                            'machineId':data,
+                            'operation':'stop'
+                        },
+                        "success":function(data){
+                            layer.msg(data, {
+                                icon: 1,time: 1000
+                            });
+                            window.location.reload();
+                        },
+                        "error":function(){
+                            alert('操作失败')
+                        }
+                    });
+                 }
+            )
+        }
 
-            var data = tableCheck.getData();
-
-            layer.confirm('确认要删除吗？' + data,
-            function(index) {
-                //捉到所有被选中的，发异步进行删除
-                layer.msg('删除成功', {
-                    icon: 1
-                });
-                $(".layui-form-checked").not('.header').parents('tr').remove();
-            });
-        }</script>
+        function start(data){
+            layer.confirm('确认要开启售货吗？',
+                function(){
+                    $.ajax({
+                        "url":"/admin/machine/update",
+                        "type":"POST",
+                        "data":{
+                            'machineId':data,
+                            'operation':'start'
+                        },
+                        "success":function(data){
+                            layer.msg(data, {
+                                icon: 1,time: 1000
+                            });
+                            window.location.reload();
+                        },
+                        "error":function(){
+                            alert('操作失败')
+                        }
+                    });
+                }
+            )
+        }
+    </script>
 
 </html>
