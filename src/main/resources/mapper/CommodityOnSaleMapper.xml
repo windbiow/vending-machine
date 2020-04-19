@@ -27,6 +27,7 @@
     <select id="findOne" resultType="com.fuhe.chen.vendingmachine.pojo.CommodityOnSale">
         select * from commodity_onsale
         where commodity_id = #{commodityId,jdbcType=INTEGER}
+        and machine_id = #{machineId,jdbcType=INTEGER}
     </select>
 
     <select id="findStock" parameterType="com.fuhe.chen.vendingmachine.pojo.CommodityOnSale" resultType="Integer">

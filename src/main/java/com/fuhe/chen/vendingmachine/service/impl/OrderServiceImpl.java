@@ -115,10 +115,10 @@ public class OrderServiceImpl implements IOrderService {
         Map<Object,Object> redisCommodity= redisUtils.hmget(out_trade_no);
         redisCommodity.forEach((commodityId,commodityStr)->{
             //修改在售商品信息,商品库存减量
-            CommodityOnSale commodity = commodityOnSaleDao.findOne(Integer.parseInt(commodityId.toString()));
-
             String [] str = ((String)commodityStr).split("_");
-            commodity.setCommodityId(commodity.getId());
+            CommodityOnSale commodity = commodityOnSaleDao.findOne(Integer.parseInt(commodityId.toString()),Integer.parseInt(str[1]));
+
+            commodity.setId(commodity.getId());
             commodity.setCount(commodity.getCount()-Integer.valueOf(str[1]));
             commodityOnSaleDao.updateCommodityOnSale(commodity);
 

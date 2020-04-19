@@ -44,7 +44,7 @@ public interface CommodityOnSaleDao {
      * @param commodityId
      * @return
      */
-    CommodityOnSale findOne(@Param("commodityId") Integer commodityId);
+    CommodityOnSale findOne(@Param("commodityId") Integer commodityId,@Param("machineId") Integer machineId);
 
     /**
      * 查询商品库存

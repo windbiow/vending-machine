@@ -23,6 +23,13 @@
 
     <dependencies>
 
+        <!--MQTT服务器-->
+        <dependency>
+            <groupId>org.eclipse.paho</groupId>
+            <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+
 
         <!--wxpay-->
         <dependency>

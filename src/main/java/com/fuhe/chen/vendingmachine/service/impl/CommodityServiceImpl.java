@@ -64,10 +64,10 @@ public class CommodityServiceImpl implements ICommodityService {
     }
 
     @Override
-    public void addCommoditySold(String tradeNo, Map<CommodityInMachine, Integer> commoditySolds) {
+    public void addCommoditySold(String tradeNo, Map<CommodityInMachine, Integer> commoditySolds,String machineId) {
         commoditySolds.forEach((commodity,count)->{
             String field = String.valueOf(commodity.getId());
-            String value = commodity.getPrice()+"_"+count+"_"+commodity.getCategoryName()+"_"+commodity.getCommodityName();
+            String value = commodity.getPrice()+"_"+count+"_"+commodity.getCategoryName()+"_"+commodity.getCommodityName()+"_"+machineId;
             redisUtils.hset(tradeNo,field,value);
             redisUtils.expire(tradeNo,60*15);
         });

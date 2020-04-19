@@ -35,7 +35,7 @@ public interface ICommodityService {
      * 将待支付订单的商品信息加入缓存中
      * @param commoditySolds
      */
-    void addCommoditySold(String tradeNo,Map<CommodityInMachine,Integer> commoditySolds);
+    void addCommoditySold(String tradeNo,Map<CommodityInMachine,Integer> commoditySolds,String machineId);
 
     /**
      * 查询商品信息(分页)

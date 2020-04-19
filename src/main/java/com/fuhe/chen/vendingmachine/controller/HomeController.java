@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alipay.api.response.AlipayTradeQueryResponse;
 import com.fuhe.chen.vendingmachine.alipay.Alipay;
 import com.fuhe.chen.vendingmachine.common.ApiResponse;
+import com.fuhe.chen.vendingmachine.common.mqtt.ServerMQTT;
 import com.fuhe.chen.vendingmachine.common.redis.RedisUtils;
 import com.fuhe.chen.vendingmachine.common.utils;
 import com.fuhe.chen.vendingmachine.constant.ErrorConstant;
@@ -50,6 +51,8 @@ public class HomeController {
     @Autowired
     IShoppingCartService shoppingCartService;
 
+    @Autowired
+    ServerMQTT serverMQTT;
 
     /**
      * 首页
@@ -117,7 +120,7 @@ public class HomeController {
         orderService.addOrder(order);
 
         //此处向缓存中添加已售商品信息
-        commodityService.addCommoditySold(tradeNo,commodityMap);
+        commodityService.addCommoditySold(tradeNo,commodityMap,String.valueOf(machineId));
 
         String orderPrice = String.valueOf(price);
         String commodityName = "贩卖机商品";
@@ -170,7 +173,7 @@ public class HomeController {
         orderService.addOrder(order);
 
         //此处向缓存中添加已售商品信息
-        commodityService.addCommoditySold(tradeNo,commodityMap);
+        commodityService.addCommoditySold(tradeNo,commodityMap,String.valueOf(machineId));
 
         String orderPrice = new DecimalFormat("0.00").format(price);
         String commodityName = "贩卖机商品";
@@ -206,6 +209,7 @@ public class HomeController {
 
                 //此处向下位机发送操作指令,将商品拿出
                 LOGGER.info("向下位机发送操作指令,将商品拿出");
+                sendMessageToMachine(out_trade_no);
 
                 //订单成功处理
                 orderService.orderToSuccess(out_trade_no,trade_no,payDate,buyer_id);
@@ -224,6 +228,24 @@ public class HomeController {
             //订单未通过
         }
     }
+
+
+    private void sendMessageToMachine(String out_trade_no) {
+        Map<Object,Object> redisCommodity= redisUtils.hmget(out_trade_no);
+        StringBuilder sb = new StringBuilder();
+        redisCommodity.forEach((id,commodityStr)->{
+            String [] str = ((String)commodityStr).split("_");
+            String commodityId= id.toString();
+            Integer count= Integer.valueOf(str[1]);
+            sb.append(commodityId+":"+count+"|");
+        });
+        try{
+            serverMQTT.sendMessage("vending-machine","111","向下位机发出信息,信息内容为:"+sb);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
 
     /**
      * 支付跳转页面
@@ -269,5 +291,7 @@ public class HomeController {
         shoppingCartService.clear(machineId);
         return "操作成功";
     }
+
+
 
 }

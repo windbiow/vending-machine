@@ -2,6 +2,7 @@ package com.fuhe.chen.vendingmachine;
 
 import com.alipay.api.AlipayApiException;
 import com.fuhe.chen.vendingmachine.alipay.Alipay;
+import com.fuhe.chen.vendingmachine.common.mqtt.ServerMQTT;
 import com.fuhe.chen.vendingmachine.common.redis.RedisUtils;
 import com.fuhe.chen.vendingmachine.common.utils;
 import com.fuhe.chen.vendingmachine.dao.CommodityOnSaleDao;
@@ -30,16 +31,16 @@ import java.util.Map;
 class VendingMachineApplicationTests {
 
     @Autowired
-    OrderDao orderDao;
+    ServerMQTT serverMQTT;
 
-    @Autowired
-    RedisUtils redisUtils;
 
     @Test
     void test4(){
-//        System.out.println(redisUtils.getValues("orders:"));
-        System.out.println(redisUtils.get("orders:1:10"));
+//        try{
+//            serverMQTT.sendMessage("111","helloworld");
+//        }catch (Exception e){
+//
+//        }
+
     }
-
-
 }
